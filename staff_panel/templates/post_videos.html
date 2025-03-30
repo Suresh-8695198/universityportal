@@ -1,0 +1,584 @@
+<!-- Post Videos Section -->
+{% extends 'staff_dashboard.html' %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
+<style>
+    /* Gradient Text */
+    .gradient-text {
+        background: linear-gradient(90deg, #ff8a00, #da1b60, #ff8a00);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        animation: gradient-flow 3s infinite linear;
+    }
+
+    @keyframes gradient-flow {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+
+    /* Glow Effect */
+    .glow-on-hover {
+        position: relative;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .glow-on-hover::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(45deg, #ff8a00, #da1b60);
+        filter: blur(6px);
+        z-index: -1;
+        transition: opacity 0.3s ease-in-out;
+        opacity: 0;
+    }
+
+    .glow-on-hover:hover::after {
+        opacity: 1;
+    }
+
+    /* Pulse Animation for Play Button */
+   /* Buttons */
+.btn-circle {
+    width: 50px; /* Slightly larger for prominence */
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, #ff8a00, #da1b60); /* Gradient for depth */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 138, 0, 0.7); /* Glowing shadow */
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    margin-left: 10px;
+   
+}
+
+/* Pulse Animation for Play Button */
+.pulse-animation {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(255, 138, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.3);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 30px rgba(255, 138, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.5);
+    }
+}
+
+/* Hover Effect */
+.btn-circle:hover {
+    transform: scale(1.2);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3), 0 0 50px rgba(255, 138, 0, 0.9);
+    background: linear-gradient(145deg, #ff5722, #e91e63); /* Slight color shift on hover */
+}
+
+/* Ripple Effect */
+.btn-circle::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.btn-circle:active::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+
+    /* Video Thumbnail */
+    .video-thumbnail img {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .video-thumbnail:hover img {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255, 138, 0, 0.8);
+    }
+
+    /* Border Gradient */
+    .border-gradient {
+        border: 2px solid;
+        border-image: linear-gradient(90deg, #ff8a00, #da1b60) 1;
+    }
+
+    
+    
+/* Advanced Header Animation */
+.fancy-header {
+    position: relative;
+    background: linear-gradient(90deg, #ff8a00, #da1b60, #007bff);
+    background-clip: text; /* Standard property */
+    -webkit-background-clip: text; /* WebKit-based browsers */
+    -moz-background-clip: text; /* Mozilla-based browsers */
+    -o-background-clip: text; /* Older Opera versions */
+    -ms-background-clip: text; /* Older IE versions */
+    -webkit-text-fill-color: transparent; /* Required for WebKit-based browsers */
+    animation: text-slide 5s infinite linear;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Animate text with sliding gradient */
+@keyframes text-slide {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Advanced Icons */
+.advanced-icon-left,
+.advanced-icon-right {
+    font-size: 60px; /* Adjust icon size */
+    position: absolute; /* Allow flexible positioning */
+    top: 50%; /* Vertically center icons */
+    transform: translateY(-50%); /* Compensate for top alignment */
+    animation: icon-bounce 2s infinite ease-in-out, icon-rotate 5s infinite linear;
+    z-index: 2; /* Ensure icons are visible */
+}
+
+/* Left and Right Specific Styles */
+.advanced-icon-left {
+    left: -180px; /* Adjust distance from header */
+    color: #ff8a00;
+}
+
+.advanced-icon-right {
+    right: -180px;
+    color: #da1b60;
+}
+
+/* Icon Bounce Animation */
+@keyframes icon-bounce {
+    0%, 100% {
+        transform: translateY(-50%) scale(1);
+    }
+    50% {
+        transform: translateY(-60%) scale(1.2);
+    }
+}
+
+/* Icon Rotate Animation */
+@keyframes icon-rotate {
+    0% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+     /* Roadmap Container */
+     .roadmap-container {
+            position: relative;
+            margin: 20px 10px;
+            padding-left: 40px;
+            border-left: 4px solid #e0e0e0;
+            overflow: hidden;
+        }
+
+        /* Roadmap Node */
+        .roadmap-node {
+            position: relative;
+            padding-bottom: 40px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .roadmap-node:last-child {
+            padding-bottom: 0;
+        }
+
+        /* Roadmap Connector */
+        .roadmap-node::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(90deg, #ff8a00, #da1b60);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 138, 0, 0.7);
+        }
+
+        .roadmap-node::after {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 11px;
+            width: 4px;
+            height: calc(100% - 20px);
+            background: linear-gradient(180deg, #e0e0e0, #e0e0e0);
+            transition: height 0.5s ease, background 0.5s ease;
+            z-index: 1;
+        }
+
+        .scroll-filled .roadmap-node::after {
+            background: linear-gradient(180deg, #ff8a00, #da1b60);
+            box-shadow: 0 0 10px rgba(255, 138, 0, 0.7);
+        }
+
+        /* Glow Effect for Filled Nodes */
+        .scroll-filled .roadmap-node::before {
+            box-shadow: 0 0 15px rgba(255, 138, 0, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: glowPulse 1.5s infinite ease-in-out;
+        }
+
+        /* Date Section */
+        .roadmap-date {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Date Icon */
+        .roadmap-date i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+            color: #ff8a00;
+            animation: iconPulse 2s infinite ease-in-out;
+        }
+
+        /* Fade-in Animation for Roadmap */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glow Pulse Animation */
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255, 138, 0, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 138, 0, 1), 0 0 30px rgba(255, 0, 0, 0.7);
+            }
+        }
+
+        /* Icon Pulse Animation */
+        @keyframes iconPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+/* General Button Styling */
+.btn {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+}
+
+/* Button with Icons */
+.btn i {
+    margin-right: 8px;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+/* Edit Button */
+.btn-edit {
+    background: linear-gradient(145deg, #007bff, #0056b3);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(145deg, #0056b3, #004085);
+    transform: scale(1.05);
+    color: white;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-edit:hover i {
+    transform: rotate(10deg);
+}
+
+/* Delete Button */
+.btn-delete {
+    background: linear-gradient(145deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(145deg, #c82333, #a71d2a);
+    transform: scale(1.05);
+    color: white;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-delete:hover i {
+    transform: scale(1.2);
+}
+
+/* Ripple Effect on Click */
+.btn:active::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    opacity: 0;
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+</style>
+<div class="container mt-4">
+    <h1 class="text-center mb-5 fancy-header display-4">
+        <i class="bi bi-play-btn advance-icon-left"></i>
+        Post Video Tutorials
+        <i class="bi bi-stars advance-icon-right"></i>
+    </h1>
+
+    <!-- Button to trigger modal for adding a new video tutorial -->
+    <div class="text-center mb-5">
+        <button class="btn btn-gradient btn-lg glow-on-hover shadow-lg" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+            <i class="bi bi-plus-circle-dotted me-2 fs-4"></i> Add Tutorial
+        </button>
+    </div>
+
+    <!-- Modal for adding video tutorial -->
+    <div class="modal fade" id="addVideoModal" tabindex="-1" aria-labelledby="addVideoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content glass-effect">
+                <div class="modal-header">
+                    <h5 class="modal-title gradient-text" id="addVideoModalLabel"><i class="bi bi-cloud-upload-fill me-2"></i>Add Video Tutorial</h5>
+                    <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'post_videos' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-4">
+                            <label for="videoTitle" class="form-label fw-bold">Video Title</label>
+                            <input type="text" class="form-control shadow-sm rounded-pill" id="videoTitle" name="title" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="videoLink" class="form-label fw-bold">Video Link</label>
+                            <input type="url" class="form-control shadow-sm rounded-pill" id="videoLink" name="link" placeholder="https://" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary shadow-sm rounded-pill" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-gradient shadow-sm glow-on-hover rounded-pill">
+                            <i class="bi bi-check-circle-fill"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Video Playback -->
+    <div class="modal fade" id="videoPlayerModal" tabindex="-1" aria-labelledby="videoPlayerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content glass-effect">
+                <div class="modal-header">
+                    <h5 class="modal-title gradient-text" id="videoPlayerModalLabel">
+                        <i class="bi bi-play-circle me-2"></i> Video Player
+                    </h5>
+                    <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <!-- Video Embed -->
+                    <div class="ratio ratio-16x9">
+                        <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="roadmap-container">
+        {% for date, videos in grouped_videos.items %}
+        <!-- Roadmap Node -->
+        <div class="roadmap-node">
+            <!-- Date Section -->
+            <div class="roadmap-date gradient-text">
+                <i class="bi bi-calendar3"></i> {{ date }}
+            </div>
+            <hr class="border-gradient">
+    
+            <!-- Video Cards -->
+            <div class="row">
+                {% for video in videos %}
+                <div class="col-md-6 col-lg-4 mb-5">
+                    <div class="card shadow-lg border-0 rounded-4 overflow-hidden video-card glass-effect">
+                        <div class="card-body p-0">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#videoPlayerModal" onclick="loadVideo('{{ video.link }}')" class="video-thumbnail position-relative">
+                                <img src="https://img.youtube.com/vi/{{ video.link|slice:'17:28' }}/hqdefault.jpg" 
+                                     alt="{{ video.title }}" class="img-fluid rounded-0" loading="lazy">
+                                <button class="ply-btn btn-danger btn-circle play-button shadow-lg pulse-animation">
+                                    <i class="bi bi-play-fill fs-3"></i>
+                                </button>
+                            </a>
+                            <div class="p-4">
+                                <h5 class="card-title text-truncate fw-bold gradient-text" style="max-width: 100%">{{ video.title }}</h5>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-person-circle"></i> 
+                                    Uploaded by: <strong>{{ video.uploaded_by_name }}</strong><br>
+                                    <i class="fa-solid fa-envelope"></i>
+                                    Gmail: {{ video.uploaded_by }}
+                                </p>
+                                <p class="text-muted mb-3">
+                                    <i class="bi bi-clock-history"></i> Uploaded at: 
+                                    <strong>{{ video.uploaded_at_local }}</strong>
+                                </p>
+                                <a href="{% url 'edit_video' video_id=video.video_id %}" class="btn btn-edit shadow-sm rounded-pill">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <form action="{% url 'delete_video' video_id=video.video_id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-delete shadow-sm rounded-pill">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+<script>
+    // Staggered animation for cards on scroll
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoCards = document.querySelectorAll('.video-card');
+        videoCards.forEach((card, i) => {
+            setTimeout(() => {
+                card.classList.add('animate-card');
+            }, i * 100);
+        });
+    });
+
+    // Function to load video into iframe
+    function loadVideo(videoUrl) {
+        let videoId;
+        const fullUrlMatch = videoUrl.match(/[?&]v=([^&]+)/);
+        if (fullUrlMatch && fullUrlMatch[1]) {
+            videoId = fullUrlMatch[1];
+        } else {
+            const shortUrlMatch = videoUrl.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+            if (shortUrlMatch && shortUrlMatch[1]) {
+                videoId = shortUrlMatch[1];
+            }
+        }
+
+        if (videoId) {
+            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = embedUrl;
+        }
+    }
+
+    // Clear the iframe source when the modal is closed to stop video playback
+    const videoPlayerModal = document.getElementById('videoPlayerModal');
+    videoPlayerModal.addEventListener('hidden.bs.modal', () => {
+        const iframe = document.getElementById('videoIframe');
+        iframe.src = ''; // Clear the iframe source to stop video playback
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const roadmapNodes = document.querySelectorAll(".roadmap-node");
+
+    const isInViewport = (element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.top <= window.innerHeight * 0.8 && rect.bottom >= 0;
+    };
+
+    const updateRoadmap = () => {
+        roadmapNodes.forEach((node) => {
+            const nodeTop = node.getBoundingClientRect().top;
+            const viewportHeight = window.innerHeight;
+
+            if (isInViewport(node)) {
+                node.classList.add("scroll-filled");
+            } else if (nodeTop > viewportHeight) {
+                node.classList.remove("scroll-filled");
+            }
+        });
+    };
+
+    window.addEventListener("scroll", updateRoadmap);
+    window.addEventListener("resize", updateRoadmap);
+    updateRoadmap(); // Initial call
+});
+
+
+</script>
+
+<!-- Minified Bootstrap and Icons -->
+ <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" defer></script>
+{% endblock %}

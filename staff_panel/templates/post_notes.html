@@ -1,0 +1,194 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Add Animations JS -->
+<script src="https://cdn.jsdelivr.net/npm/wowjs@1.1.2/dist/wow.min.js"></script>
+
+<!-- Add Custom CSS and JS -->
+<style>
+    /* General Card Styling */
+    .department-card {
+        background: #ffffff; /* White background */
+        border-radius: 15px;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 15px rgba(70, 69, 71, 0.8), 0 0 5px rgba(7, 1, 8, 0.6) !important;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+
+    /* Hover Effect for Card */
+    .department-card:hover {
+       
+        box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.2);
+        border-color: #9c27b0; /* Purple border */
+    }
+
+    /* Glow Effect */
+    .department-card:hover .card-body {
+        box-shadow: 0px 0px 25px 5px rgba(156, 39, 176, 0.6); /* Purple glow */
+    }
+
+    /* Department Icon */
+    .department-icon {
+        color: #9c27b0; /* Purple */
+        font-size: 50px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+    .department-icon:hover {
+        transform: scale(1.3);
+        color: #673ab7; /* Darker Purple */
+    }
+
+    /* Year Badge Styling */
+    .year-badge {
+        background-color: #9c27b0;
+        color: white;
+        font-size: 14px;
+        margin-right: 5px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .year-badge:hover {
+        transform: scale(1.1);
+    }
+
+    /* Card Title and Text Styling */
+    .card-title {
+        color: #333333;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .card-text {
+        color: #666666;
+        font-size: 1rem;
+    }
+
+    /* Button Styling */
+    .btn-outline-success {
+        background-color: transparent;
+        color: #9c27b0;
+        border: 2px solid #9c27b0;
+        padding: 12px 24px;
+        font-size: 16px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #9c27b0;
+        color: white;
+        border-color: #9c27b0;
+        transform: scale(1.05);
+    }
+
+    /* Glowing Animation for Button */
+    .btn-outline-success:focus, .btn-outline-success:hover {
+        box-shadow: 0 0 20px 4px rgba(156, 39, 176, 0.5);
+    }
+
+    /* Hover Zoom Effect for Card */
+    .department-card:hover {
+        animation: zoomIn 0.5s ease-out;
+    }
+
+    @keyframes zoomIn {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.05); }
+    }
+
+    /* Glowing Border and Shadow Effect on Hover */
+    .department-card:hover {
+        border: 2px solid #9c27b0;
+        animation: glowing 1.5s infinite ease-in-out;
+    }
+
+    @keyframes glowing {
+        0% { box-shadow: 0 0 10px #9c27b0; }
+        50% { box-shadow: 0 0 20px #9c27b0; }
+        100% { box-shadow: 0 0 10px #9c27b0; }
+    }
+
+    /* Animated Fade In Effects */
+    .animate__fadeInUp {
+        animation-duration: 1s;
+    }
+
+    /* Add smooth transition for icons */
+    .department-icon {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    /* Add Animated Icons */
+    .department-icon:hover {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    /* Hover Effects on the entire row */
+    .department-card:hover .department-icon {
+        color: #673ab7;
+        transform: rotate(15deg);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .department-card {
+            margin-bottom: 20px;
+        }
+    }
+    h1{
+        color: #673ab7 !important;
+    }
+    .hover-zoom {
+    transition: transform 0.3s ease;
+}
+
+.hover-zoom:hover {
+    transform: scale(1.05);
+}
+
+</style>
+
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold  animate__animated animate__fadeInUp">Post Notes</h1>
+        <p class="text-muted animate__animated animate__fadeInUp animate__delay-1s">Select a class to upload notes for students.</p>
+    </div>
+
+    <!-- Departments Section -->
+    <div class="row g-4" id="departments-container">
+        {% for department in departments %}
+            <div class="col-md-4">
+                <div class="card department-card shadow-lg rounded-3 wow animate__animated animate__fadeInUp" data-wow-delay="0.3s">
+                    <div class="card-body">
+                        <i class="department-icon fas fa-chalkboard-teacher"></i> <!-- You can change this icon -->
+                        <div class="year-badges mb-3">
+                        
+                                <span class="year-badge">{{ department.years }} {{ department.name }}</span>
+                   
+                        </div>
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">Total Students: <strong>{{ department.total_students }}</strong></p>
+                        <!-- Link to view more about the department -->
+                       <!-- Button with Icon -->
+<a href="{% url 'list_department' department.id %}" class="btn btn-outline-success w-100 hover-zoom">
+    <i class="fas fa-users"></i> View Students
+</a>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+{% endblock %}

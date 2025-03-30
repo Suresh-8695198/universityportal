@@ -1,0 +1,217 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<!-- Main Container -->
+<div class="container mt-5">
+   <!-- Header Section -->
+   <div class="text-center mb-5">
+    <h1 class="fw-bold glowing-text">{{ department.year }} - {{ department.name }}</h1>
+    <p class="text-muted">Manage students and assignments seamlessly with style.</p>
+
+      <!-- Back Button -->
+      <div class="text-center mt-4">
+        <a href="javascript:history.back()" class="btn btn-secondary glowing-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+
+      <!-- Assignments Section -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-header bg-gradient text-white fw-bold">
+            <i class="fas fa-file-alt"></i> Assignments
+        </div>
+        <div class="card-body">
+            <button class="btn btn-success mb-4 animate-btn" data-bs-toggle="modal" data-bs-target="#postAssignmentModal">
+                <i class="bi bi-file-earmark-plus"></i> Post New Assignment
+            </button>
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th><i class="fas fa-heading"></i> Title</th>
+                        <th><i class="fas fa-info-circle"></i> Description</th>
+                        <th><i class="fas fa-calendar-alt"></i> Deadline</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignment in assignments %}
+                    <tr class="table-row-hover">
+                        <td>{{ assignment.title }}</td>
+                        <td>{{ assignment.description }}</td>
+                        <td>{{ assignment.deadline }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Students Section -->
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-header bg-gradient text-white fw-bold">
+            <i class="fas fa-users"></i> Students
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th><i class="fas fa-id-badge"></i> Roll Number</th>
+                        <th><i class="fas fa-user"></i> Name</th>
+                        <th><i class="fas fa-envelope"></i> Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="table-row-hover">
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+  
+
+</div>
+
+<!-- Additional CSS -->
+<style>
+    .bg-gradient {
+        background: linear-gradient(90deg, #5d0cb4, #4b0368);
+    }
+    .glowing-text {
+        color: #fff;
+        text-shadow: 0 0 5px #640dc0, 0 0 10px #7a02dd, 0 0 20px #430792;
+    }
+    .glowing-btn {
+        text-shadow: 0 0 10px #6a11cb, 0 0 20px #9b25fc, 0 0 30px #8a0fa8;
+        box-shadow: 0 0 10px #6a11cb, 0 0 20px #a625fc, 0 0 30px #560aad;
+    }
+    .glowing-btn:hover {
+        transform: scale(1.05);
+        transition: 0.3s ease;
+    }
+    .animate-btn {
+        transition: all 0.3s ease;
+    }
+    .animate-btn:hover {
+        transform: translateY(-3px);
+    }
+    .table-row-hover:hover {
+        background-color: rgba(37, 117, 252, 0.1);
+        transition: background-color 0.3s ease;
+    }
+    /* Card Design */
+.card {
+    background: linear-gradient(135deg, #ffffff, #f2f2f2);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    margin: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Design */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Table Header Styling */
+.table th {
+    background-color: #2d0466;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Table Row Hover */
+.table tbody tr:hover {
+    background-color: rgba(37, 117, 252, 0.1);
+    transform: scale(1.02);
+}
+
+/* Table nth-child Effects */
+.table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+
+.table tbody td:nth-child(2) {
+    font-weight: bold;
+    color: #6a11cb;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.table tbody td:nth-child(2):hover {
+    color: #9b25fc;
+    transform: scale(1.1);
+}
+
+/* Button Animation */
+.glowing-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #5d0cb4, #4b0368);
+    text-shadow: 0 0 10px #6a11cb, 0 0 20px #9b25fc, 0 0 30px #8a0fa8;
+    box-shadow: 0 0 10px #6a11cb, 0 0 20px #a625fc, 0 0 30px #560aad;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glowing-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #6a11cb, 0 0 30px #a625fc, 0 0 40px #430792;
+}
+
+/* Responsive Card Adjustments */
+@media screen and (max-width: 768px) {
+    .card {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px;
+    }
+}
+
+</style>
+
+<!-- Font Awesome Script -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+{% endblock %}
+
+

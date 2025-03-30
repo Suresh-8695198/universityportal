@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+    background: linear-gradient(120deg, #89f7fe, #66a6ff);
+    font-family: 'Poppins', sans-serif;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #ff7eb3, #ff758c);
+
+    -webkit-text-fill-color: transparent;
+}
+
+.bg-light-glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.glow-effect {
+    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 8px 20px rgba(255, 117, 140, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+.glow-effect:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 12px 25px rgba(255, 117, 140, 0.7);
+}
+
+.form-control {
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.radio-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, #ff9a8b, #ff6a88);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.form-check-input:checked + .form-check-label .radio-bg {
+    opacity: 1;
+}
+
+    </style>
+<div class="container mt-5">
+    <h3 class="text-center gradient-text">Edit Department</h3>
+    <form method="POST" class="p-4 shadow rounded bg-light-glass">
+        {% csrf_token %}
+        
+        <!-- Department Name -->
+        <div class="mb-4">
+            <label for="departmentName" class="form-label fs-5">Degree</label>
+            <input type="text" class="form-control rounded-pill" id="departmentName" name="department_name" value="{{ department.name }}" placeholder="Enter department name" required>
+        </div>
+
+        <!-- Year Selection Radio Buttons -->
+        <div class="mb-4">
+            <label class="form-label fs-5">Select Year</label><br>
+            <div class="d-flex gap-3">
+                <div class="form-check form-check-inline position-relative">
+                    <input class="form-check-input" type="radio" value="I" id="IYear" name="years" {% if department.year == 'I' %}checked{% endif %} required>
+                    <label class="form-check-label fs-6" for="IYear">
+                        <span class="radio-bg"></span> I Year
+                    </label>
+                </div>
+                <div class="form-check form-check-inline position-relative">
+                    <input class="form-check-input" type="radio" value="II" id="IIYear" name="years" {% if department.year == 'II' %}checked{% endif %} required>
+                    <label class="form-check-label fs-6" for="IIYear">
+                        <span class="radio-bg"></span> II Year
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Students -->
+        <div class="mb-4">
+            <label for="totalStudents" class="form-label fs-5">Total Students</label>
+            <input type="number" class="form-control rounded-pill" id="totalStudents" name="total_students" value="{{ department.total_students }}" placeholder="Enter total students" required>
+        </div>
+
+        <!-- Save and Cancel Buttons -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary btn-lg px-5 glow-effect">Save</button>
+            <a href="{% url 'manage_departments' %}" class="btn btn-secondary btn-lg px-5 glow-effect">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

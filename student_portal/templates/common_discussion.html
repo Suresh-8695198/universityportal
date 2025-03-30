@@ -1,0 +1,28 @@
+{% extends "nav.html" %}
+
+{% block title %}Common Discussion{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Common Discussion</h1>
+    <div class="chat-box mt-4">
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message">
+                <img src="{{ message.profile_photo }}" alt="Profile" class="profile-photo">
+                <div>
+                    <strong>{{ message.sender_name }}</strong>
+                    <p>{{ message.message }}</p>
+                    <small>{{ message.timestamp }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <form method="POST" id="message-form">
+            {% csrf_token %}
+            <textarea name="message" class="form-control" placeholder="Type your message..."></textarea>
+            <button type="submit" class="btn btn-primary mt-2">Send</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

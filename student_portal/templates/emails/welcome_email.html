@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .email-container {
+            background: linear-gradient(135deg, #ff6f61, #6b00b6);
+            border: none;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(255, 105, 135, 0.3);
+            max-width: 700px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header img {
+    max-height: 80px;
+    margin: 10px;
+    max-width: 100%;
+    animation: rotate 5s linear infinite; /* Rotation animation */
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+        .header h1 {
+            color: #ffeb3b;
+            font-size: 26px;
+            margin: 10px 0;
+        }
+
+        .welcome-message {
+            background: linear-gradient(90deg, #ff4081, #e040fb);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .content h2 {
+            font-size: 22px;
+            color: #ffeb3b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ddd;
+        }
+
+        .features-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .features-table th, .features-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features-table th {
+            background: linear-gradient(90deg, #ff4081, #e040fb);
+            color: white;
+        }
+
+        .features-table td {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #bbb;
+            margin-top: 30px;
+            padding-top: 10px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            background: linear-gradient(90deg, #ffeb3b, #ff9800);
+            color: black;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, #ffc107, #ff5722);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        }
+
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .welcome-message {
+                font-size: 16px;
+                padding: 15px;
+            }
+
+            .content h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header Section -->
+        <div class="header">
+            <img src="https://drive.google.com/uc?id=1dclsDUJYHVgkZSwVNFx6qtUm4KM_Arq5" alt="Logo">
+            <img src="https://drive.google.com/uc?id=1KUboeEg28_liIbAGQQ-j-JHnu_gZSp7g" alt="Periyar University Logo">
+            <h1>Welcome to the Periyar University Student Portal</h1>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="welcome-message">
+            <p>
+                <i class="fas fa-graduation-cap"></i> Empowering your learning and professional journey with modern tools and innovative solutions.
+            </p>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content">
+            <h2><i class="fas fa-user"></i> Hello {{ student.name }} (  {{ student.roll_number }} ),</h2>
+            <p>
+                We are excited to introduce the new <strong> Periyar University Student and Staff Portal</strong>. It is designed to help you learn, communicate, and grow in a better way. Explore the different tools and features that will support you in your academic journey.
+            </p>
+
+            <p>Here’s what you can expect:</p>
+
+            <!-- Features Table -->
+            <table class="features-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-star"></i> Key Features</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="fas fa-file-alt"></i> Interactive Notes</td>
+                        <td>Staff can upload and share notes, PPTs, and video tutorials for students.</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-bell"></i> Live Announcements</td>
+                        <td>Stay updated with the latest events and news directly on the portal.</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-code"></i> Interview Preparation</td>
+                        <td>Solve coding problems, engage in CSS battles, and more – with rewards and leaderboards.</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-tasks"></i> Skill Development</td>
+                        <td>Daily and weekly challenges to improve your communication, technical, and aptitude skills.</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-certificate"></i> Certifications</td>
+                        <td>Earn e-certificates for achievements, motivating you to aim higher.</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-handshake"></i> HR Access</td>
+                        <td>Showcase your activities and milestones to recruiters for better career opportunities.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                Make the most of this innovative portal and unlock new possibilities for your future. It's time to take your academic and professional journey to the next level!
+            </p>
+
+            <!-- Call to Action -->
+            <div class="button-container">
+                <a href="#" class="button"><i class="fas fa-arrow-right"></i> Explore the Portal</a>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>© 2025 Periyar University | All Rights Reserved</p>
+        </div>
+    </div>
+</body>
+</html>

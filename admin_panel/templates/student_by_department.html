@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Department Students Section -->
+    <div id="students-section">
+        <h2 class="text-center mb-4">Students of Department: <span id="department-name"></span></h2>
+
+        <div id="students-container" class="row g-4"></div>
+
+        <!-- Back Button -->
+        <div class="text-center mt-4">
+            <button id="back-to-department-view-btn" class="btn btn-secondary">Back to Departments</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Function to fetch students by department
+        async function fetchStudents(departmentId, departmentName) {
+            try {
+                const response = await fetch(`/get_students_by_department?department_id=${departmentId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Set department name
+                    document.getElementById("department-name").textContent = departmentName;
+
+                    const studentsContainer = document.getElementById("students-container");
+                    studentsContainer.innerHTML = ""; // Clear existing content
+
+                    // Populate student cards
+                    data.students.forEach(student => {
+                        const card = document.createElement("div");
+                        card.classList.add("col-lg-4", "col-md-6", "col-sm-12");
+
+                        card.innerHTML = `
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">${student.name}</h5>
+                                    <p class="card-text">
+                                        <strong>Roll Number:</strong> ${student.roll_number}<br>
+                                        <strong>DOB:</strong> ${student.dob}<br>
+                                        <strong>Email:</strong> ${student.email}<br>
+                                        <strong>Contact:</strong> ${student.contact}<br>
+                                        <strong>Gender:</strong> ${student.gender}<br>
+                                        <strong>Age:</strong> ${student.age}
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="/edit_student/${departmentId}/${student.id}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="/delete_student/${departmentId}/${student.id}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        studentsContainer.appendChild(card);
+                    });
+                } else {
+                    alert(data.message || "Failed to load student data.");
+                }
+            } catch (error) {
+                console.error("Error fetching student data:", error);
+                alert("An error occurred while fetching student data.");
+            }
+        }
+
+        // Handle Back to Departments button
+        document.getElementById("back-to-department-view-btn").addEventListener("click", function () {
+            window.location.href = "{% url 'departments' %}"; // Replace with the correct URL
+        });
+
+        // Fetch students when the page loads
+        const departmentId = "{{ department_id }}"; // Set dynamically via Django
+        const departmentName = "{{ department_name }}"; // Set dynamically via Django
+        fetchStudents(departmentId, departmentName);
+    });
+</script>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn {
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.1);
+    }
+
+    .text-primary {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

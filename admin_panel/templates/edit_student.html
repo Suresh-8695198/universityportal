@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Card Container -->
+    <div class="card shadow-lg border-0 p-4 rounded-4" style="animation: fadeIn 1s;">
+        <h3 class="text-center mb-4">Edit Student Details</h3>
+        <form id="edit-student-form" method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="department_id" name="department_id" value="{{ student.department_id }}">
+            <input type="hidden" id="bench_id" name="bench_id" value="{{ student.bench_id }}">
+
+            <!-- Roll Number -->
+            <div class="mb-3">
+                <label for="rollNumber" class="form-label">Roll Number</label>
+                <input type="text" id="rollNumber" name="roll_number" class="form-control" value="{{ student.roll_number }}" required>
+            </div>
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="studentName" class="form-label">Name</label>
+                <input type="text" id="studentName" name="name" class="form-control" value="{{ student.name }}" required>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="mb-3">
+                <label for="dob" class="form-label">Date of Birth</label>
+                <input type="date" id="dob" name="dob" class="form-control" value="{{ student.dob }}" required>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ student.email }}" required>
+            </div>
+
+            <!-- Contact -->
+            <div class="mb-3">
+                <label for="contact" class="form-label">Contact</label>
+                <input type="text" id="contact" name="contact" class="form-control" value="{{ student.contact }}" required>
+            </div>
+
+            <!-- Gender -->
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select id="gender" name="gender" class="form-select" required>
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male" {% if student.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if student.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if student.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <!-- Age -->
+            <div class="mb-3">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" id="age" name="age" class="form-control" value="{{ student.age }}" required>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success px-4">Update</button>
+                <a href="{% url 'manage_students' %}" class="btn btn-secondary px-4">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Notifications -->
+<div id="successToast" class="toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-icon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="toast-body">
+            Data updated successfully!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
+<div id="errorToast" class="toast align-items-center text-white bg-danger border-0 position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-icon">
+            <i class="bi bi-x-circle-fill"></i>
+        </div>
+        <div class="toast-body">
+            An error occurred while updating the student.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
+<!-- Fade-In Animation -->
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        background-color: #f9f9f9;
+    }
+
+    .btn-success {
+        background: linear-gradient(45deg, #28a745, #45d165);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(45deg, #45d165, #28a745);
+        transform: scale(1.05);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(45deg, #6c757d, #929aa3);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(45deg, #929aa3, #6c757d);
+        transform: scale(1.05);
+    }
+
+    .toast {
+        max-width: 360px;
+        border-radius: 0.5rem;
+    }
+
+    .toast-icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .toast-body {
+        padding: 0.7rem 2rem;
+        font-size: 1rem;
+    }
+
+    .bi {
+        color: white;
+    }
+
+    .btn-close-white {
+        color: white;
+    }
+</style>
+
+<script>
+    document.getElementById("edit-student-form").onsubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = {
+            roll_number: document.getElementById("rollNumber").value,
+            name: document.getElementById("studentName").value,
+            dob: document.getElementById("dob").value,
+            email: document.getElementById("email").value,
+            contact: document.getElementById("contact").value,
+            gender: document.getElementById("gender").value,
+            age: document.getElementById("age").value,
+            department_id: document.getElementById("department_id").value,
+            bench_id: document.getElementById("bench_id").value,
+        };
+
+        try {
+            const response = await fetch("", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+                successToast.show();
+                setTimeout(() => {
+                    window.location.href = "{% url 'manage_students' %}";
+                }, 2000);
+            } else {
+                const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+                errorToast.show();
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+            errorToast.show();
+        }
+    };
+</script>
+
+{% endblock %}

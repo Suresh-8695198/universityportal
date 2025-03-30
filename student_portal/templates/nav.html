@@ -1,0 +1,877 @@
+{% block base %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Student Portal{% endblock %}</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Add Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+
+:root {
+    --primary-color: #8b0797;
+    --secondary-color: #940cd3;
+    --glow-color: rgba(187, 34, 233, 0.8);
+    --hover-bg: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+
+   .navbar {
+    background: linear-gradient(135deg, #1a1a1a, #222831);
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid var(--glow-color);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-brand img:hover {
+    transform: scale(1.1);
+}
+
+/* Navbar Links */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+
+.navbar-nav .nav-link {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px 15px;
+    position: relative;
+    transition: all 0.3s;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+
+/* Futuristic Glowing Effect */
+.navbar-nav .nav-link::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+   
+    transform: translateX(-50%) scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+/* 🌟 Neon Edge Glow */
+.navbar-nav .nav-link:hover {
+    background: var(--hover-bg);
+    transform: scale(1.15);
+    box-shadow: 0 0 15px var(--glow-color), 0 0 25px var(--secondary-color);
+}
+
+/* ✨ Pulsating Glow Effect */
+@keyframes neonPulse {
+    0% { box-shadow: 0 0 5px var(--glow-color); }
+    50% { box-shadow: 0 0 20px var(--glow-color), 0 0 30px var(--secondary-color); }
+    100% { box-shadow: 0 0 5px var(--glow-color); }
+}
+
+.navbar-nav .nav-link:hover {
+    animation: neonPulse 1s infinite alternate;
+}
+
+/* 🎨 Theme Button */
+.theme-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #111;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--primary-color);
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+.profile-drop {
+top:10px;
+
+}
+/* Dropdown Styling */
+.dropdown {
+    
+    position: relative;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    background: #222831;
+    transition: background 0.3s;
+}
+
+.profile-header:hover {
+    background: var(--hover-bg);
+   
+    box-shadow: 0 0 15px var(--glow-color), 0 0 25px var(--primary-color);
+}
+
+.profile-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.profile-header:hover img {
+    transform: scale(1.1);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 70px;
+    background: #222831;
+    min-width: 200px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+    transform-origin: top right;
+    transform: scaleY(0);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.dropdown:hover .dropdown-menu,
+.dropdown-menu:hover {
+    display: block;
+    transform: scaleY(1);
+    opacity: 1;
+}
+
+/* Dropdown Items */
+.dropdown-menu .dropdown-item {
+    color: #ffffff;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.3s, transform 0.2s ease-in-out;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    
+    color: #0d1117;
+    transform: translateX(5px);
+}
+
+
+/* 🌟 Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+     
+  
+    color: white;
+  
+}
+
+/* 🌟 Profile Image */
+.profile-header img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+
+
+
+
+
+        .gamified-button {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ff6f61, #ffa14d);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0px 4px 10px rgba(255, 111, 97, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gamified-button:hover {
+            background: linear-gradient(90deg, #ffa14d, #ff6f61);
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px #00e6e6;
+            }
+            50% {
+                box-shadow: 0 0 20px #00e6e6;
+            }
+            100% {
+                box-shadow: 0 0 5px #00e6e6;
+            }
+        }
+
+        .animated-card {
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .animated-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #000000, #1c1c1c);
+            color: #fff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            transition: all 0.4s ease-in-out;
+            box-shadow: 0 0 15px var(--primary-color), inset 0 0 10px var(--primary-color);
+            z-index: 10;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .main-contents {
+            margin-left: 250px;
+            transition: all 0.4s ease-in-out;
+        }
+
+        .main-contents.collapsed {
+            margin-left: 60px;
+        }
+        .sidebar .logo img{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .sidebar .logo {
+            margin-left: -10px;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 2px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+   
+        .sidebar .portal-title {
+            font-size: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-left: -1px;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .sidebar.collapsed .portal-title {
+            opacity: 0;
+            transform: scale(0.2);
+            pointer-events: none;
+        }
+
+        .sidebar ul li {
+            padding: 15px 20px;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .sidebar ul li:hover {
+            background: rgba(34, 233, 156, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(187, 34, 233, 0.6), inset 0 0 10px rgba(148, 12, 211, 0.4);
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a237e;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            transition: transform 0.4s ease, background 0.4s ease;
+            z-index: 1001;
+        }
+
+        .toggle-btn:hover {
+            background: #4a007e;
+            transform: rotate(180deg);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg,var(--glow-color), rgba(89, 8, 121, 0.8));
+            border-radius: 20px;
+            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(137, 34, 233, 0.8), rgba(89, 8, 121, 0.8));
+            box-shadow: 0 0 15px rgb(153, 34, 233), 0 0 30px rgb(104, 34, 233);
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--primary-color), transparent 70%);
+            z-index: -1;
+            animation: glow-pulse 3s infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes glow-pulse {
+            0% {
+                filter: blur(8px);
+                opacity: 0.5;
+            }
+            50% {
+                filter: blur(12px);
+                opacity: 1;
+            }
+            100% {
+                filter: blur(8px);
+                opacity: 0.5;
+            }
+        }
+
+        .sidebar ul li {
+            padding: 15px 20px;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background: rgba(34, 97, 233, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--primary-color), inset 0 0 10px var(--primary-color);
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 7px;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .sidebar .college-logo {
+            margin-left: -12px;
+            max-width: 60px;
+            max-height: 60px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px 20px;
+            position: relative;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .main-contents {
+            display: block;
+            visibility: visible;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+            font-size: 18px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover i {
+            transform: rotate(360deg);
+            color: #ffeb3b;
+        }
+
+        .sidebar ul li a span {
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar.collapsed ul li a span {
+            display: none;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+            transition: margin-left 0.4s ease;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 80px;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a237e;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            transition: transform 0.4s ease, background 0.4s ease;
+            z-index: 1001;
+        }
+
+        .toggle-btn:hover {
+            background: #4a007e;
+            transform: rotate(180deg);
+        }
+
+        .logo .portal-title {
+            display: inline-block;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .sidebar.collapsed .logo .portal-title {
+            opacity: 0;
+            transform: scale(0.2);
+            pointer-events: none;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        /* Add these styles to your existing CSS */
+.navbar.hidden {
+    display: none;
+}
+
+.sidebar.hidden {
+    display: none;
+}
+ /* Toggle Button Styling */
+  /* Toggle Button Styling */
+  .toggle-btn1 {
+        position: fixed;
+        bottom: 15px;
+        right: 20px;
+        z-index: 1000;
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 5px 15px rgba(255, 0, 0, 0.5);
+        cursor: pointer;
+        font-size: 26px;
+        transition: all 0.3s ease-in-out;
+        animation: pulse 2s infinite alternate;
+    }
+
+    /* Hover Effect */
+    .toggle-btn1:hover {
+        transform: scale(1.15);
+        background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        box-shadow: 0px 5px 20px rgba(255, 50, 50, 0.7);
+    }
+
+    /* Click Animation */
+    .toggle-btn1:active {
+        transform: scale(0.9) rotate(15deg);
+    }
+
+    /* Pulse Effect */
+    @keyframes pulse {
+        0% { box-shadow: 0px 5px 15px rgba(255, 0, 0, 0.5); }
+        100% { box-shadow: 0px 5px 25px rgba(255, 50, 50, 0.8); }
+    }
+
+    /* Rotate & Bounce Animation */
+    .rotate {
+        transform: rotate(360deg) scale(1.1);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    /* Sidebar & Navbar Animations */
+    .sidebar, .navbar {
+        transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
+    .hidden {
+        opacity: 0;
+        transform: translateX(-100%);
+        pointer-events: none;
+    }
+
+    /* Color Palette */
+    .color-palette {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        display: none;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #222831;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .color-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .color-circle:hover {
+        transform: scale(1.2);
+    }
+    </style>
+</head>
+<body>
+    <body>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'images/logo-web.png' %}" alt="Logo" class="college-logo">
+                <span class="portal-title">Student Portal</span>
+            </div>
+            <ul>
+                <li><a href="#"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a  href="{% url 'student_notes' %}"><i class="fas fa-book"></i> <span>Notes</span></a></li>
+                <li><a href="{% url 'videos' %}"><i class="fas fa-video"></i> <span>Videos</span></a></li>
+
+                <li><a href="#"><i class="fas fa-tasks"></i> <span>Assignments</span></a></li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-puzzle-piece"></i> <span>Problem Solving</span></a>
+                    <ul class="dropdown">
+                        <li><a href="{% url 'problems' %}">CSS Problems</a></li>
+                        <li><a href="#">HTML Problems</a></li>
+                        <li><a href="{% url 'leetcode_problems' %}">LeetCode-like Problems</a></li>
+                    </ul>
+                </li>
+                <li><a href="{% url 'leaderboard' %}"><i class="fas fa-trophy"></i> <span>Leaderboard</span></a></li>
+                <li><a href="{% url 'certifications' %}"><i class="fas fa-certificate"></i> <span>View Certifications</span></a></li>
+                <li><a href="{% url 'discussions' %}"><i class="fas fa-comments"></i> <span>Discussions</span></a></li>
+            </ul>
+        </div>
+    
+        <!-- Main Content -->
+        <div class="main-contents">
+            <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <img src="{% static 'images/logo-web.png' %}" alt="Logo">
+                        Student Portal
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="#">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="{% url 'student_notes' %}">Notes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="#">Videos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="#">Assignments</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Problem Solving Playground
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'problems' %}">CSS Problems</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'html_problems' %}">HTML Problems</a></li>
+                                    <li><a class="dropdown-item" href="#">LeetCode-like Problems</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'leetcode_problems' %}">LeetCode-like Problems</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="{% url 'leaderboard' %}">Leaderboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="#">View Certificates</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="{% url 'certifications' %}">Generate Certifications</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link hover-underline-animation" href="{% url 'discussions' %}">Discussions</a>
+                            </li>
+                        </ul>
+                        <div class="dropdown profile-drop">
+                            <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="profile-header">
+                                    <img src="{{ profile_image_url }}" alt="Profile">
+                                    <span class="name">{{ student.name }}</span>
+                                </div>
+                            </a>
+                    
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">View Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        
+    
+            <!-- Main Content -->
+            <div class="container mt-5">
+                <div class="text-center mb-4">
+                   
+                   
+   
+                    <button id="themeToggle" class="theme-toggle-btn">Change Theme</button>
+                    <div class="color-palette" id="colorPalette">
+                        <div class="color-circle" style="background: #ff6f61;" data-color="#ff6f61"></div>
+                        <div class="color-circle" style="background: #ffa14d;" data-color="#ffa14d"></div>
+                        <div class="color-circle" style="background: #8b0797;" data-color="#8b0797"></div>
+                        <div class="color-circle" style="background: #940cd3;" data-color="#940cd3"></div>
+                        <div class="color-circle" style="background: #00e6e6;" data-color="#00e6e6"></div>
+                        <div class="color-circle" style="background: #1a237e;" data-color="#1a237e"></div>
+                        <div class="color-circle" style="background: #4a007e;" data-color="#4a007e"></div>
+                        <div class="color-circle" style="background: #ff416c;" data-color="#ff416c"></div>
+                        <div class="color-circle" style="background: #ff4b2b;" data-color="#ff4b2b"></div>
+                    </div>
+
+                </div>
+  
+               
+                {% block content %}
+                {% endblock %}
+            </div>
+          <!-- Toggle Button -->
+<button id="toggle-control" class="toggle-btn1">
+    <i class="fas fa-gamepad"></i> <!-- Playful Initial Icon -->
+</button>
+        </div>
+        
+   
+    <!-- Add Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const themeButton = document.getElementById("themeToggle");
+    const colorPalette = document.getElementById("colorPalette");
+
+    // Function to generate a random bright color
+    function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Function to generate a theme with contrast
+    function generateRandomTheme() {
+        const primary = getRandomColor();
+        const secondary = getRandomColor();
+        const glow = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.8)`;
+        return { primary, secondary, glow };
+    }
+
+    // Apply theme
+    function applyTheme(theme) {
+        document.documentElement.style.setProperty("--primary-color", theme.primary);
+        document.documentElement.style.setProperty("--secondary-color", theme.secondary);
+        document.documentElement.style.setProperty("--glow-color", theme.glow);
+        localStorage.setItem("customTheme", JSON.stringify(theme));
+    }
+
+    // Load theme from storage
+    let storedTheme = localStorage.getItem("customTheme");
+    if (storedTheme) {
+        applyTheme(JSON.parse(storedTheme));
+    }
+
+    // On button click, toggle color palette visibility
+    themeButton.addEventListener("click", function () {
+        colorPalette.style.display = colorPalette.style.display === "none" ? "flex" : "none";
+    });
+
+    // On color circle click, apply the selected color as primary color
+    colorPalette.addEventListener("click", function (event) {
+        if (event.target.classList.contains("color-circle")) {
+            const selectedColor = event.target.getAttribute("data-color");
+            const newTheme = generateRandomTheme();
+            newTheme.primary = selectedColor;
+            applyTheme(newTheme);
+        }
+    });
+});
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const sidebar = document.querySelector('.sidebar');
+        const navbar = document.querySelector('.navbar');
+        const toggleButton = document.getElementById('toggle-control');
+        const icon = toggleButton.querySelector('i');
+
+        let currentView = 'sidebar'; // Initial state: Sidebar is visible
+        navbar.classList.add('hidden'); // Hide navbar initially
+
+        toggleButton.addEventListener('click', function() {
+            toggleButton.classList.add('rotate'); // Apply rotation effect
+
+            setTimeout(() => {
+                toggleButton.classList.remove('rotate'); // Reset rotation after animation
+            }, 500);
+
+            if (currentView === 'sidebar') {
+                sidebar.classList.add('hidden'); // Hide sidebar
+                navbar.classList.remove('hidden'); // Show navbar
+                icon.classList.remove('fa-gamepad');
+                icon.classList.add('fa-dragon'); // Fun Icon Change
+                currentView = 'navbar';
+            } else {
+                navbar.classList.add('hidden'); // Hide navbar
+                sidebar.classList.remove('hidden'); // Show sidebar
+                icon.classList.remove('fa-dragon');
+                icon.classList.add('fa-gamepad'); // Icon for Sidebar mode
+                currentView = 'sidebar';
+            }
+        });
+    });
+    </script>
+</body>
+</html>
+{% endblock %}

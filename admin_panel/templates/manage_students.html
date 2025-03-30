@@ -1,0 +1,1553 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <h3 class="text-primary">Manage Students</h3>
+    <p class="text-muted">Select a degree to view or add students.</p>
+
+    <!-- Dual Interface Toggle -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button id="toggleView" class="btn btn-outline-primary">
+            <i class="fas fa-exchange-alt"></i> Switch to Table View
+        </button>
+    </div>
+
+    <style>
+  #graphicalInterface {
+    max-height: 65vh; 
+    min-height: 40vh; /* Minimum height to avoid cutoff */
+    overflow-y: auto;
+    overflow-x: hidden;
+ 
+
+}
+
+/* Card Design Improvements */
+.card {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    transition: all 0.3s ease;
+    text-align: center;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.card .text-muted {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+.card .btn {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Background Fill Animation */
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: all 0.6s ease-out;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 0;
+}
+
+/* Text stays visible on hover */
+.btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* View Students Button */
+.view-students-btn {
+    border: 2px solid #007bff;
+    background-color: transparent;
+    color: #f8fafc;
+}
+
+.view-students-btn:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #0056b3;
+}
+
+.view-students-btn:hover:before {
+    background-color: #007bff;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Add Student Button */
+.add-student-btn {
+    border: 2px solid #28a745;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.add-student-btn:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #218838;
+}
+
+.add-student-btn:hover:before {
+    background-color: #28a745;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Delete All Button */
+.delete-all-btn {
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #fcfcfc;
+}
+
+.delete-all-btn:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #c82333;
+}
+
+.delete-all-btn:hover:before {
+    background-color: #dc3545;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Smooth Hover Effects */
+.btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Hover effect for icon rotation */
+.btn i {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover i {
+    transform: rotate(360deg);
+}
+
+/* Card Hover Effect */
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Fade-in effect */
+.fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Button Hover Effects for Add/Delete Buttons */
+.add-student-btn, .upload-excel-btn, .delete-all-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover, .delete-all-btn:hover {
+    transform: scale(1.05);
+    background-color: #007bff;
+}
+
+/* Table Styling */
+.table {
+   
+    font-size: 16px;
+}
+
+.table thead {
+    background: linear-gradient(180deg, #383738, #09090a);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.02);
+    transition: all 0.3s ease-in-out;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .card {
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+
+    .text-muted {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Button Styling */
+/* Button Styling */
+.manage-degree-btn {
+    position: relative;
+    display: inline-block;
+    background-color: transparent;
+    border: 2px solid #007bff;
+    color: #007bff;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+    text-align: center;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Fill Effect Behind Text */
+.manage-degree-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 25px;
+    transform: scaleX(0);
+    transform-origin: 100% 50%;
+    z-index: 0;
+    transition: transform 0.5s ease-in-out;
+}
+
+
+/* Fade-in Effect for Cards */
+.fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }n
+
+    .text-muted {
+        font-size: 1rem;
+    }
+}
+
+/* Button Hover Effects */
+.card .btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.card .btn:hover {
+    transform: scale(1.05);
+    background-color: #2980b9;
+}
+
+/* Glow Effect on Buttons */
+.manage-degree-btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.manage-degree-btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Animation for Buttons */
+#empty-page-container .btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#empty-page-container .btn:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+}
+
+/* Hover Effects for Add/Delete Buttons */
+.add-student-btn, .upload-excel-btn, .delete-all-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover, .delete-all-btn:hover {
+    transform: scale(1.05);
+    background-color: #007bff;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Apply animation to icons */
+.icon-animation {
+    animation: fadeIn 0.5s ease-in-out, bounce 0.5s ease-in-out;
+}
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+/* For small screens like mobile */
+@media (max-width: 576px) {
+    #graphicalInterface {
+        max-height: 50vh; /* Slightly smaller height for smaller screens */
+        min-height: 30vh; /* Minimum height for small screens */
+    }
+}
+
+/* For larger mobile devices and tablets */
+@media (max-width: 768px) {
+    #graphicalInterface {
+        max-height: 55vh; /* Moderate height for medium screens */
+        min-height: 35vh; /* Slightly larger minimum height for medium screens */
+    }
+}
+
+/* For larger screens like laptops and desktops */
+@media (min-width: 1024px) {
+    #graphicalInterface {
+        max-height: 65vh; /* Standard height for larger screens */
+        min-height: 40vh; /* Standard minimum height for larger screens */
+    }
+}
+
+/* For very large screens like large desktops */
+@media (min-width: 1200px) {
+    #graphicalInterface {
+        max-height: 70vh; /* Slightly larger max height for very large screens */
+        min-height: 45vh; /* Larger minimum height for very large screens */
+    }
+}
+        /* Responsive Media Queries */
+        @media (max-width: 768px) {
+            /* Stack the cards vertically on smaller screens */
+            .card {
+                max-width: 100%; /* Cards should fill available space */
+                margin-bottom: 1rem;
+            }
+
+            /* Reduce font size for smaller screens */
+            .card-title {
+                font-size: 1.25rem;
+            }
+
+            .text-muted {
+                font-size: 0.9rem;
+            }
+        }
+
+
+    /* Enhanced table styling */
+    .table {
+    
+        font-size: 16px; /* Increased font size for better readability */
+    }
+
+    .table thead {
+        background: linear-gradient(180deg, #383738, #09090a);
+        color: white;
+        font-size: 1.1rem; /* Increased header text size */
+        font-weight: bold;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    
+
+    /* Fade-in effect for table */
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    /* Tooltip Styling */
+    .tooltip-inner {
+        background-color: #343a40;
+        color: white;
+    }
+
+    /* Styling table rows */
+    .table-row:focus-within {
+        background-color: #e9ecef;
+    }
+
+    /* Styling for S.No column */
+    .sno-column {
+        width: 10%;
+        text-align: center;
+    }
+    th{
+        color:white !important;
+    }
+    /* Spacing for Table Header */
+    th, td {
+       
+        padding: 12px 15px;
+        text-align: center;
+    }
+
+    h4 {
+  
+        margin-bottom: 30px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+
+/* Table Styling */
+.table {
+    transition: all 0.3s ease;
+}
+
+.table th, .table td {
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* Hover Effects for Table Rows */
+.table-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Button Hover Effects */
+button.btn:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+button.btn i {
+    transition: transform 0.3s ease;
+}
+
+button.btn:hover i {
+    transform: rotate(360deg);
+}
+
+/* Modal Animation */
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Buttons on Empty Page */
+#empty-page-container .btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#empty-page-container .btn:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+}
+
+/* Back to Table Button */
+#back-to-table-view-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#back-to-table-view-btn:hover {
+    background-color: #6c757d;
+    transform: scale(1.05);
+}
+
+/* Hover Effects for Add/Delete Buttons */
+.add-student-btn, .upload-excel-btn, .delete-all-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover, .delete-all-btn:hover {
+    transform: scale(1.05);
+    background-color: #007bff;
+}
+
+/* Department Table Styling */
+.table th {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+}
+
+.table td {
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+/* Department List Section */
+#student-list-section {
+    margin-top: 20px;
+}
+
+#student-list-section .table {
+    transition: transform 0.3s ease;
+}
+
+#student-list-section .table:hover {
+    transform: scale(1.02);
+}
+
+/* Glow Effect on Buttons */
+.add-student-btn, .upload-excel-btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Fade In Animation for Empty Page */
+#empty-page-container {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Style for Header */
+h4.text-primary {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+
+/* General Button Styling */
+.btn {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover Effect with Animation */
+.btn:hover {
+    color: #fff;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Water Fill Effect for Hover */
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+
+    border-radius: 50%;
+    transition: all 2s ease-out;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: -1;
+}
+
+/* Trigger Water Fill Effect on Hover */
+.btn:hover:before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Text Stays on Top */
+.btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* View Students Button (Outline) */
+.view-students-btn {
+    border: 2px solid #007bff;
+    background-color: transparent;
+    color: #007bff;
+}
+
+.view-students-btn:hover {
+    background-color: #007bff;
+    border-color: #2980b9;
+}
+
+/* Add Student Button (Outline) */
+.add-student-btn {
+    border: 2px solid #28a745;
+    background-color: transparent;
+    color: #28a745;
+}
+
+.add-student-btn:hover {
+    background-color: #28a745;
+    border-color: #218838;
+}
+
+/* Delete All Button (Red) */
+.delete-all-btn {
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #dc3545;
+}
+
+.delete-all-btn:hover {
+    background-color: #dc3545;
+    border-color: #c82333;
+}
+
+/* Icon Animation */
+.btn i {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover i {
+    transform: rotate(360deg);
+}
+
+/* Add glow effect for buttons on hover */
+.btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling for Action Column Buttons */
+.table .btn {
+    font-size: 1rem;
+    padding: 10px 15px;
+}
+
+/* Table Row Hover Effect */
+.table-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Responsive Button Styling */
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+
+/*New Css*/
+
+
+/* Table Styling */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+/* Styling for Table Rows */
+.table-row:focus-within {
+    background-color: #e9ecef;
+}
+
+/* Table Header */
+.table th {
+    color: white !important;
+    background-color: #343a40;
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Table Data */
+.table td {
+    padding: 12px 15px;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .table th {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .table td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        padding-right: 10px;
+    }
+}
+
+/* Styling S.No. Column */
+.sno-column {
+    width: 10%;
+    text-align: center;
+}
+
+/* Hover Effects for Table Rows */
+.table-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Responsive Button Styling */
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+        
+
+
+
+/* Added Student Card */
+.card.added {
+    background-color: #d4edda; /* Light Green */
+    border-color: #c3e6cb;
+    box-shadow: 0 6px 20px rgba(56, 224, 111, 0.2);
+}
+
+.card.added:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(56, 224, 111, 0.4);
+    background-color: #c3e6cb; /* Slightly darker on hover */
+}
+
+/* Empty Student Card */
+.card.empty {
+    background-color: #f8d7da; /* Light Red */
+    border-color: #f5c6cb;
+    box-shadow: 0 6px 20px rgba(255, 99, 71, 0.2);
+}
+
+.card.empty:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 99, 71, 0.4);
+    background-color: #f5c6cb; /* Slightly darker on hover */
+}
+
+/* Title and Content Styling */
+.card h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+}
+
+.card p {
+    font-size: 1.1rem;
+
+    font-weight:bold;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Hover effect on title */
+.card:hover h5 {
+    color: #1e7e34; /* Darker green for Added Card */
+}
+
+/* Button Styling */
+.add-student-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 99, 71, 0.3);
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-student-btn:hover {
+    background: linear-gradient(145deg, #ff6a95, #ff8567);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 99, 71, 0.4);
+}
+
+/* Smooth Transition for Elements */
+.card, .add-student-btn {
+    transition: all 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        padding: 15px;
+    }
+
+    .card h5 {
+        font-size: 1.2rem;
+    }
+
+    .card p {
+        font-size: 1rem;
+    }
+
+    .add-student-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+#staffListSection{
+    margin-top: 18px;
+}
+
+
+
+    </style>
+
+ <!-- Graphical View -->
+<!-- Graphical View -->
+<div id="graphicalInterface" class="fade-in">
+    <div class="row g-4">
+        {% for dept in departments %}
+        <div class="col-md-3 col-sm-6 col-12">
+            <div class="card h-100 shadow-lg rounded-3 card-hover-effect">
+                <div class="card-body">
+                    <h5 class="card-title">{{ dept.years }} - {{ dept.name }}</h5>
+                    <p class="text-muted">Total Students: {{ dept.total_students }}</p>
+                    <button class="btn btn-primary btn-sm manage-degree-btn" 
+                            data-dept-id="{{ dept.id }}" 
+                            data-dept-name="{{ dept.name }}"
+                            data-total-students="{{ dept.total_students }}">
+                        Manage Degree
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Main Table for Departments -->
+<div id="tableInterface" class="d-none fade-in p-4 bg-light rounded shadow-sm">
+    <h4 class="text-secondary fw-bold mb-4">Department Information</h4>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped table-bordered align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th class="sno-column">S.No</th>
+                    <th>Degree</th>
+                    <th>Year</th>
+                    <th>Total Students</th>
+                    <th>Actions</th>
+                    <th>Upload Excel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dept in departments %}
+                <tr class="table-row">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ dept.name }}</td>
+                    <td>{{ dept.years }}</td>
+                    <td>{{ dept.total_students }}</td>
+                    <td>
+                        <!-- Button to View Students -->
+                        <button class="btn btn-outline-primary btn-sm view-students-btn" 
+                                data-dept-id="{{ dept.id }}" data-dept-name="{{ dept.name }}">
+                            <i class="bi bi-person-lines-fill"></i> View
+                        </button>
+                        <!-- Button to Add Student -->
+                        <button class="btn btn-outline-success btn-sm add-student-btn" 
+                                data-dept-id="{{ dept.id }}" data-dept-name="{{ dept.name }}">
+                            <i class="bi bi-person-plus-fill"></i> Add
+                        </button>
+                        <!-- Button to Delete All -->
+                        <button class="btn btn-outline-danger btn-sm delete-all-btn" data-dept-id="{{ dept.id }}">
+                            <i class="bi bi-trash-fill"></i> Delete All
+                        </button>
+                    </td>
+                    <td>
+                        <!-- Button to Upload Excel Sheet -->
+                        <button class="btn btn-outline-info btn-sm upload-excel-btn" 
+                                data-dept-id="{{ dept.id }}">
+                            <i class="bi bi-file-earmark-spreadsheet-fill"></i> Upload
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- File Upload Modal -->
+<div class="modal fade" id="uploadExcelModal" tabindex="-1" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadExcelModalLabel">Upload Excel Sheet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadExcelForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="excelFile" class="form-label">Choose Excel File</label>
+                        <input type="file" class="form-control" id="excelFile" name="excel_file" accept=".xlsx,.xls" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for dept in departments %}
+    {% if dept.id == current_dept_id %}
+        <button class="btn btn-danger delete-all-btn" data-dept-id="{{ dept.id }}">
+            Delete All
+        </button>
+    {% endif %}
+{% endfor %}
+
+<!-- Empty Page Layout for Student List -->
+<div id="empty-page-container" class="d-none ">
+    <div class="fade-in p-4 bg-light rounded shadow-sm">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 id="empty-department-name" class="text-secondary fw-bold"></h4>
+        <button id="back-to-table-view-btn" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Back to Table View
+        </button>
+    </div>
+
+    <!-- Add Student and Delete All Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-outline-success btn-sm add-student-btn" 
+            data-dept-id="{{ dept.id }}" 
+            data-dept-name="{{ dept.name }}">
+            <i class="fas fa-plus"></i> Add Student
+        </button>
+        <button class="btn btn-danger btn-sm delete-all-btn" data-dept-id="{{ dept.id }}">
+            <i class="fas fa-trash-alt"></i> Delete All
+        </button>
+    </div>
+</div>
+    <!-- Student List Section -->
+<div id="student-list-section" >
+    <!-- Students table will appear here after fetching -->
+</div>
+</div>
+
+
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addStudentForm">
+                {% csrf_token %}
+                <input type="hidden" name="department_id" id="selectedDepartmentId">
+                <input type="hidden" name="bench_id" id="selectedBenchId">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="rollNumber" class="form-label">Roll Number</label>
+                        <input type="text" class="form-control" id="rollNumber" name="roll_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="studentName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="dob" name="dob" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact" class="form-label">Contact</label>
+                        <input type="text" class="form-control" id="contact" name="contact" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select id="gender" class="form-select" name="gender" required>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" name="age" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add Student</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Success and Error Modal Structure -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalMessageBody">
+                <!-- Dynamic message content goes here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="reloadButton">Reload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script>
+
+
+// Open Add Student Modal and set department and bench IDs
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('add-student-btn')) {
+        // Retrieve the department and bench IDs from the clicked button
+        var deptId = event.target.getAttribute('data-dept-id');
+        console.log(deptId)
+        // Set the department ID and bench name in the modal
+        document.getElementById('selectedDepartmentId').value = deptId;
+
+        // Open the modal
+        const addStudentModal = new bootstrap.Modal(document.getElementById('addStudentModal'));
+        addStudentModal.show();
+    }
+});
+
+document.getElementById('addStudentForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting the traditional way
+
+    const formData = {
+        department_id: document.getElementById('selectedDepartmentId').value,
+        roll_number: document.getElementById('rollNumber').value,
+        name: document.getElementById('studentName').value,
+        dob: document.getElementById('dob').value,
+        email: document.getElementById('email').value,
+        contact: document.getElementById('contact').value,
+        gender: document.getElementById('gender').value,
+        age: document.getElementById('age').value,
+    };
+
+    // Simple form validation
+    if (!formData.roll_number || !formData.name || !formData.email || !formData.contact) {
+        showToast('Error', 'Please fill in all the required fields.', 'danger');
+        return; // Stop the form submission
+    }
+
+    fetch('/add-student/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success toast and reload the page
+            showToast('Success', 'Student added successfully!', 'success');
+            setTimeout(() => {
+                location.reload(); // Reload the page after 2 seconds to allow the toast to appear
+            }, 2000);
+        } else {
+            // Show error toast
+            showToast('Error', 'Failed to add student. Please try again.', 'danger');
+        }
+    })
+    .catch(error => {
+        // Handle network errors and show the error toast
+        console.error('Error:', error);
+        showToast('Error', 'There was an issue with the request. Please try again later.', 'danger');
+    });
+});
+
+// Function to show toast
+function showToast(title, message, type) {
+    const toastElement = document.createElement('div');
+    toastElement.classList.add('toast', 'align-items-center', 'text-white', 'border-0', 'position-fixed', 'top-0', 'end-0', 'm-3', `bg-${type}`);
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+    toastElement.style.zIndex = '9999'; // Ensure the toast is on top
+
+    const toastBody = document.createElement('div');
+    toastBody.classList.add('d-flex', 'align-items-center', 'p-3');
+    toastElement.appendChild(toastBody);
+
+    // Icon based on the type of message (success or error)
+    const icon = document.createElement('i');
+    icon.classList.add('fas', type === 'success' ? 'fa-check-circle' : 'fa-times-circle', 'me-3');
+    icon.style.fontSize = '20px';
+    toastBody.appendChild(icon);
+
+    const bodyContent = document.createElement('div');
+    bodyContent.classList.add('toast-body');
+    bodyContent.innerHTML = `<strong>${title}</strong>: ${message}`;
+    toastBody.appendChild(bodyContent);
+
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('btn-close', 'btn-close-white', 'ms-auto');
+    closeButton.setAttribute('data-bs-dismiss', 'toast');
+    closeButton.setAttribute('aria-label', 'Close');
+    toastBody.appendChild(closeButton);
+
+    document.body.appendChild(toastElement);
+
+    // Show the toast
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => {
+        toastElement.remove();
+    }, 3000);
+}
+
+   // Toggle View Logic
+    document.getElementById('toggleView').addEventListener('click', () => {
+        document.getElementById('graphicalInterface').classList.toggle('d-none');
+        document.getElementById('tableInterface').classList.toggle('d-none');
+        const toggleText = document.getElementById('graphicalInterface').classList.contains('d-none') ? 
+            '<i class="fas fa-exchange-alt"></i> Switch to Graphical View' : 
+            '<i class="fas fa-exchange-alt"></i> Switch to Table View';
+        document.getElementById('toggleView').innerHTML = toggleText;
+    });
+
+
+
+ // Redirect to Manage Students View
+document.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('manage-degree-btn')) {
+        const deptId = event.target.getAttribute('data-dept-id');
+        const deptName = event.target.getAttribute('data-dept-name');
+        const totalStudents = parseInt(event.target.getAttribute('data-total-students'));
+        
+        try {
+            // Fetch student data from the server
+            const response = await fetch(`/get_students/${deptId}/`);
+            const data = await response.json();
+
+            if (!data.success) {
+                alert(data.message || 'Failed to fetch student data.');
+                return;
+            }
+
+            const students = data.students;
+
+            // Update the graphical interface
+            document.getElementById('graphicalInterface').innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-primary">${deptName} - Students</h4>
+                    <button class="btn btn-outline-secondary" id="backToDegrees">Back to Degrees</button>
+                </div>
+                <div class="row g-4">
+                    ${Array.from({ length: totalStudents }, (_, i) => {
+                        const student = students[i] || null;
+                        return `
+                        <div class="col-md-3">
+                            <div class="card h-100 shadow-lg rounded-3 ${student ? 'added' : 'empty'}">
+                                <div class="card-body text-center">
+                                    ${student ? `
+                                        <h5 class="card-title text-success">${student.roll_number}</h5>
+                                        <p class="text-muted">${student.name}</p>
+                                    ` : `
+                                        <h5 class="card-title text-danger">Empty</h5>
+                                        <button class="btn btn-primary btn-sm add-student-btn" data-dept-id="${deptId}">
+                                            Add Student
+                                        </button>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+
+            // Back to Degrees button
+            document.getElementById('backToDegrees').addEventListener('click', () => {
+                location.reload();
+            });
+
+            // Add Student button click event
+            document.querySelectorAll('.add-student-btn').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const deptId = button.getAttribute('data-dept-id');
+                    alert(`Redirect to add student form for Department: ${deptId}`);
+                    // Redirect to student addition form or open modal
+                });
+            });
+        } catch (error) {
+            console.error('Error fetching student data:', error);
+            alert('An error occurred while fetching student data.');
+        }
+    }
+});
+
+
+function toggleInterface(interfaceType) {
+            document.getElementById('tableInterface').style.display = interfaceType === 'table' ? 'block' : 'none';
+            document.getElementById('classroomInterface').style.display = interfaceType === 'classroom' ? 'block' : 'none';
+        }
+     
+
+        function addStudentToBench(benchId, benchName) {
+            document.getElementById('selectedBenchId').value = benchId;
+            document.getElementById('addStudentModalLabel').innerText = `Add Student to Bench: ${benchName}`;
+            new bootstrap.Modal(document.getElementById('addStudentModal')).show();
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+    // Event listener for "View Students" button
+    const viewButtons = document.querySelectorAll('.view-students-btn');
+    
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const departmentId = this.getAttribute('data-dept-id');
+            const departmentName = this.getAttribute('data-dept-name');
+            
+            // Hide the departments table
+            document.getElementById('tableInterface').classList.add('d-none');
+            
+            // Hide the table and graphical views
+            document.getElementById('toggleView').classList.add('d-none');
+            
+            // Show the empty page container and department title
+            document.getElementById('empty-page-container').classList.remove('d-none');
+            document.getElementById('empty-department-name').textContent = `Degree: ${departmentName}`;
+
+            // Clear any existing student data
+            const studentListSection = document.getElementById('student-list-section');
+            studentListSection.innerHTML = '';
+
+            // Make an AJAX request to fetch students data for this department
+           fetch(`/get_students_by_department?department_id=${departmentId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Create a container for the table with a card-like effect
+            const cardContainer = document.createElement('div');
+            cardContainer.classList.add( 'student-table-card', 'mb-4');
+
+            // Create table inside the card
+            const table = document.createElement('table');
+            table.classList.add('table', 'table-striped', 'table-bordered', 'table-hover', 'student-table');
+
+            // Table header
+            const thead = document.createElement('thead');
+            thead.classList.add('thead-dark');
+            thead.innerHTML = `
+                <tr>
+                    <th>S.No.</th>
+                    <th>Roll Number</th>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Year</th>
+                    <th>Actions</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+
+            // Table body
+            const tbody = document.createElement('tbody');
+            data.students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.roll_number}</td>
+                    <td>${student.name}</td>
+                    <td>${student.dob}</td>
+                    <td>${student.email}</td>
+                    <td>${student.contact}</td>
+                    <td>${student.gender}</td>
+                    <td>${student.age}</td>
+                    <td>${student.year}</td>
+                   <td>
+    <a href="/edit_student/${departmentId}/${student.id}" class="btn btn-primary btn-sm">
+        <i class="fas fa-edit"></i> Edit
+    </a>
+    <a href="/delete_student/${departmentId}/${student.id}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this student?')">
+        <i class="fas fa-trash-alt"></i> Delete
+    </a>
+</td>
+
+                `;
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+
+            // Append table to the card container
+            cardContainer.appendChild(table);
+
+            // Append the card container to the student list section
+            studentListSection.appendChild(cardContainer);
+        } else {
+            alert('Failed to load student data.');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching student data:', error);
+        alert('Error fetching student data.');
+    });
+});
+    });
+
+
+    // Enable the back button to go back to the department view
+    document.getElementById('back-to-table-view-btn').addEventListener('click', function() {
+        // Show the table and graphical views again
+        document.getElementById('tableInterface').classList.remove('d-none');
+        document.getElementById('toggleView').classList.remove('d-none');
+        
+        // Hide the student details view
+        document.getElementById('empty-page-container').classList.add('d-none');
+    });
+});
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('delete-all-btn')) {
+        // Retrieve the department ID from the clicked button
+        var deptId = event.target.getAttribute('data-dept-id');
+        console.log(deptId); // Check if deptId is being captured properly
+
+        if (!deptId) {
+            alert('Department ID not found.');
+            return; // Exit early if deptId is missing
+        }
+
+        // Ask for confirmation before proceeding with the deletion
+        if (confirm('Are you sure you want to delete all students in this department? This action cannot be undone.')) {
+            fetch(`/delete_all_students/${deptId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('All students deleted successfully.');
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert('Failed to delete students.');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting all students:', error);
+                alert('An error occurred while deleting students.');
+            });
+        }
+    }
+});
+
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('upload-excel-btn')) {
+        // Open the upload excel modal
+        const deptId = event.target.getAttribute('data-dept-id');
+        const uploadExcelModal = new bootstrap.Modal(document.getElementById('uploadExcelModal'));
+        uploadExcelModal.show();
+
+        // Add department ID to the form for reference
+        document.getElementById('uploadExcelForm').setAttribute('data-dept-id', deptId);
+    }
+});
+
+// Handle Excel file upload form submission
+document.getElementById('uploadExcelForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const deptId = this.getAttribute('data-dept-id');
+    formData.append('department_id', deptId);
+
+    fetch('/upload-excel/', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Success', data.message, 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showToast('Error', data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        showToast('Error', 'An error occurred. Please try again.', 'danger');
+    });
+});
+
+   
+</script>
+{% endblock %}

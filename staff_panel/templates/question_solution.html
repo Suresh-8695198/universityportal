@@ -1,0 +1,363 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    transition: background-color 0.3s ease;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 900px;
+    width: 100%;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+    transition: transform 0.3s ease;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-container:hover {
+    transform: translateY(-5px);
+}
+
+/* Form Header */
+.form-header {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    color: #6c63ff;
+}
+
+/* Form Subtext */
+.form-subtext {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Input Fields */
+.styled-form input,
+.styled-form textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    resize: none; /* Prevent resizing */
+}
+
+.styled-form input:focus,
+.styled-form textarea:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.6);
+    outline: none;
+}
+
+/* Button Styling */
+.sub {
+    background-color: #574dcb;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.sub:hover {
+    transform: scale(1.05);
+}
+
+.styled-form button:active {
+    transform: scale(0.98);
+}
+
+/* Increased height of the solution textarea */
+.styled-form textarea {
+    height: 250px; /* Increased height */
+    padding: 15px 15px; /* Adjust padding for better user experience */
+}
+
+/* Enhanced Hint Card */
+.hint-card {
+    position: fixed;
+    top: 10%;
+    right: 20px;
+    background-color: #f4f7fc;
+    border-left: 5px solid #6c63ff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: floatHint 1s ease-out infinite alternate;
+    max-width: 350px;
+    width: 100%;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 99;
+}
+
+@keyframes floatHint {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+.hint-card h3 {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.hint-card p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.hint-card pre {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.hint-card:hover {
+    background-color: #f0faff;
+    transform: translateY(-5px);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Hide the Hint Section by Default */
+.hint-card.hidden {
+    display: none;
+}
+
+/* Toggle Button Styling with Glowing Effect */
+.hint-toggle-bt {
+    position: fixed;
+    top: 20%;
+    right: 20px;
+    color: #f1b40b;
+    background: none;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 100;
+}
+
+/* Glowing effect when clicked (active state) */
+.hint-toggle-bt.glowing {
+    animation: glowing 1.5s ease-in-out infinite;
+}
+
+@keyframes glowing {
+    0% {
+        filter: drop-shadow(0 0 5px #dbdf07) drop-shadow(0 0 10px #e7ac08) drop-shadow(0 0 15px #aa9a06);
+    }
+    50% {
+        filter: drop-shadow(0 0 20px #f37106) drop-shadow(0 0 30px #eaee0e) drop-shadow(0 0 40px #f1b612);
+    }
+    100% {
+        filter: drop-shadow(0 0 5px #ffef14) drop-shadow(0 0 10px #f1e20f) drop-shadow(0 0 15px #d3c506);
+    }
+}
+
+.hint-toggle-bt:hover {
+    transform: rotate(45deg);
+}
+
+.hint-toggle-bt:focus {
+    outline: none;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+    .form-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .hint-card {
+        max-width: 300px;
+    }
+
+    .form-header {
+        font-size: 1.8rem;
+    }
+
+    .form-subtext {
+        font-size: 0.9rem;
+    }
+
+    .styled-form input,
+    .styled-form textarea {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .form-header {
+        font-size: 1.6rem;
+    }
+
+    .form-subtext {
+        font-size: 0.8rem;
+    }
+
+    .hint-card {
+        max-width: 270px;
+        top: 15%;
+    }
+
+    .hint-toggle-bt {
+        top: 15%;
+        right: 10px;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .form-header {
+        font-size: 1.4rem;
+    }
+
+    .form-subtext {
+        font-size: 0.75rem;
+    }
+
+    .styled-form input,
+    .styled-form textarea {
+        padding: 10px;
+    }
+
+    .hint-card {
+        max-width: 240px;
+        top: 10%;
+    }
+
+    .hint-toggle-bt {
+        top: 10%;
+        right: 5px;
+        font-size: 1.6rem;
+    }
+}
+
+
+</style>
+
+<!-- Timeline included here -->
+{% include 'timeline.html' %}
+
+
+
+
+<div class="form-container">
+    
+     <!-- Back Button -->
+     <button onclick="history.back()" class="btn btn-secondary mb-4">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <h2 class="form-header">Share Your Solution</h2>
+    <p class="form-subtext">
+        Do you have any workable ideas or code you want to share? Link your playground or write your pseudocode here.
+    </p>
+
+    <form method="post" class="styled-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="solution">Solution*</label>
+            <textarea id="solution" name="solution" placeholder="Share your solution here..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submits sub">
+            <i class="bi bi-arrow-right-circle"></i> Next
+        </button>
+    </form>
+</div>
+
+<!-- Hint Card -->
+<div class="hint-card hidden" id="hintCard">
+    <h3><i class="bi bi-lightbulb"></i> You can share a Playground link or write your pseudocode here!</h3>
+    <p>The idea is:</p>
+    <p>When we iterate the array, we put target - current and index as (key, value) into a dictionary. We check if the current number already exists in the dictionary. If it exists, then we have found the answer. If not, we keep searching until we find the answer or reach the end of the array.</p>
+    <div class="example-card">
+        <h4>Sample:</h4>
+        <pre>
+class Solution(object):
+  def twoSum(self, nums, target):
+    match = {}
+    for idx, n in enumerate(nums):
+      if n not in match:
+        match[target - n] = idx
+      else:
+        return match[n], idx
+    return -1, -1
+        </pre>
+    </div>
+</div>
+
+<!-- Toggle Button with Hint Icon -->
+<button class="hint-toggle-bt" id="toggleBtn">
+    <i class="bi bi-lightbulb"></i>
+</button>
+
+<script>
+    // Toggle visibility of the hint card and add glow effect to the lightbulb icon
+    const toggleBtn = document.getElementById('toggleBtn');
+    const hintCard = document.getElementById('hintCard');
+
+    toggleBtn.addEventListener('click', () => {
+        hintCard.classList.toggle('hidden');
+
+        // Add or remove glowing effect
+        toggleBtn.classList.toggle('glowing');
+
+        // Change icon depending on the visibility
+        if (hintCard.classList.contains('hidden')) {
+            toggleBtn.innerHTML = '<i class="bi bi-lightbulb"></i>';
+        } else {
+            toggleBtn.innerHTML = '<i class="bi bi-lightbulb"></i>';
+        }
+    });
+</script>
+
+{% endblock %}

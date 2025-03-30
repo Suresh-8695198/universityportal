@@ -1,0 +1,97 @@
+{% extends 'nav.html' %}
+{% block content %}
+{% load static %}
+<div class="container mt-5">
+    <h2 class="text-center neon-title">🎓 Generate Certifications</h2>
+    <div class="leaderboard-container mt-4">
+        <div class="leaderboard-header">
+            <div class="leaderboard-rank">🏅 Rank</div>
+            <div class="leaderboard-name">👤 Name</div>
+            <div class="leaderboard-points">⭐ Points</div>
+            <div class="leaderboard-badge">🎖 Badge</div>
+            <div class="leaderboard-action">📄 Action</div>
+        </div>
+        <ul class="leaderboard-list">
+            {% for student in students|slice:":3" %}
+            <li class="leaderboard-item">
+                <div class="leaderboard-rank">{{ forloop.counter }}</div>
+                <div class="leaderboard-name">{{ student.name }}</div>
+                <div class="leaderboard-points">{{ student.points }}</div>
+                <div class="leaderboard-badge">{{ student.badge }}</div>
+                <div class="leaderboard-action">
+                    <a href="{% url 'download_certificate' student.id %}" class="btn btn-primary">Generate Certificate</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+    }
+
+    .neon-title {
+        font-size: 3rem;
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        animation: neonGlow 1.5s infinite alternate;
+    }
+
+    @keyframes neonGlow {
+        0% { text-shadow: 0 0 10px #ff00ff; }
+        100% { text-shadow: 0 0 20px #ff00ff; }
+    }
+
+    .leaderboard-container {
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(255, 0, 255, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .leaderboard-header, .leaderboard-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        font-size: 1.2rem;
+        transition: transform 0.3s;
+    }
+
+    .leaderboard-item {
+        position: relative;
+        background: rgba(255, 0, 255, 0.2);
+        border-radius: 10px;
+        margin: 8px 0;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .leaderboard-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+    }
+
+    .leaderboard-rank, .leaderboard-name, .leaderboard-points, .leaderboard-badge, .leaderboard-action {
+        flex: 1;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #8b0797, #940cd3);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #940cd3, #8b0797);
+        box-shadow: 0 0 10px rgba(187, 34, 233, 0.8);
+    }
+</style>
+
+{% endblock %}

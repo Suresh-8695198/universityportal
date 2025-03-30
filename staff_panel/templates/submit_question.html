@@ -1,0 +1,215 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+{% include 'timeline.html' %}
+
+<style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+.review-container {
+    max-width: 900px;
+    width: 100%;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+.review-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for cards */
+.review-title {
+    font-size: 2rem;
+    color: #333;
+    font-weight: 700;
+    text-align: center;
+    color: #6c63ff;
+    margin-bottom: 30px;
+    transition: color 0.3s ease;
+}
+
+.review-title:hover {
+    color: #4a3cfe;
+}
+
+.review-details {
+    margin-bottom: 30px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.detail-item:hover {
+    background-color: #f0f4ff;
+    transform: translateX(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.detail-item i {
+    font-size: 1.6rem;
+    color: #6c63ff;
+    margin-right: 15px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.detail-item:hover i {
+    color: #4a3cfe;
+    transform: rotate(10deg);
+}
+
+.detail-item p {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+}
+
+/* Submit Button */
+.submit-form {
+    text-align: center;
+}
+
+.btn-submit {
+    background-color: #574dcb;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-submit i {
+    margin-right: 10px;
+    font-size: 1.3rem;
+}
+
+.btn-submit:hover {
+    background-color: #2d0ce7;
+    transform: scale(1.05);
+}
+
+.btn-submit:active {
+    transform: scale(0.98);
+}
+
+/* Icon Animations */
+@keyframes glowEffect {
+    0% {
+        filter: drop-shadow(0 0 5px #dbdf07) drop-shadow(0 0 10px #e7ac08);
+    }
+    50% {
+        filter: drop-shadow(0 0 20px #f37106) drop-shadow(0 0 30px #eaee0e);
+    }
+    100% {
+        filter: drop-shadow(0 0 5px #ffef14) drop-shadow(0 0 10px #f1e20f);
+    }
+}
+
+.detail-item i:hover {
+    animation: glowEffect 1.5s ease-in-out infinite;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .review-container {
+        padding: 20px;
+    }
+
+    .review-title {
+        font-size: 1.8rem;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-item i {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .btn-submit {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-title {
+        font-size: 1.6rem;
+    }
+
+    .btn-submit {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<div class="review-container">
+    
+     <!-- Back Button -->
+     <button onclick="history.back()" class="btn btn-secondary mb-4">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <h2 class="review-title">Review Your Question</h2>
+    <div class="review-details">
+        <div class="detail-item">
+            <i class="fas fa-bookmark"></i>
+            <p><strong>Background:</strong> {{ request.session.background|default:"N/A" }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-layer-group"></i>
+            <p><strong>Category:</strong> {{ request.session.category|default:"N/A" }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-heading"></i>
+            <p><strong>Title:</strong> {{ request.session.title|default:"N/A" }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-align-left"></i>
+            <p><strong>Description:</strong> {{ request.session.description|default:"N/A" }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-code"></i>
+            <p><strong>Solution:</strong> {{ request.session.solution|default:"N/A" }}</p>
+        </div>
+        <div class="detail-item">
+            <i class="fas fa-terminal"></i>
+            <p><strong>Test Cases:</strong> {{ request.session.testcases|default:"N/A" }}</p>
+        </div>
+    </div>
+
+    <form method="post" class="submit-form">
+        {% csrf_token %}
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-check-circle"></i> Submit
+        </button>
+    </form>
+</div>
+{% endblock %}

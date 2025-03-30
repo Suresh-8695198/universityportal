@@ -1,0 +1,14 @@
+{% extends "nav.html" %}
+
+{% block title %}Discussions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Discussions</h1>
+    <div class="list-group mt-4">
+        <a href="{% url 'common_discussion' %}" class="list-group-item list-group-item-action">Common Discussion</a>
+        <a href="{% url 'interview_discussion' %}" class="list-group-item list-group-item-action">Interview</a>
+        <a href="{% url 'staff_discussion' %}" class="list-group-item list-group-item-action">Discuss with Staff Members</a>
+    </div>
+</div>
+{% endblock %}

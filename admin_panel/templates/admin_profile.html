@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<style>
+    /* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f3f4f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-profile-page {
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h1 {
+    font-size: 28px;
+    color: #444;
+}
+
+.profile-header p {
+    font-size: 16px;
+    color: #777;
+}
+
+/* Profile Details */
+.profile-details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.profile-img img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #6c63ff;
+    margin-right: 30px;
+}
+
+.profile-info h3 {
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: #777;
+    margin: 10px 0;
+}
+
+.edit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #6c63ff;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.edit-btn:hover {
+    background: #5149c7;
+}
+
+/* Settings Section */
+.profile-settings {
+    margin-top: 20px;
+}
+
+.setting {
+    background: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+}
+
+.setting:hover {
+    background: #e7e7e7;
+}
+
+.setting h4 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.setting p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.setting-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #6c63ff;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.setting-btn:hover {
+    background: #5149c7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-img img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-info h3 {
+        text-align: center;
+    }
+
+    .profile-settings {
+        margin-top: 30px;
+    }
+}
+
+</style>
+<div class="admin-profile-page">
+    <div class="profile-header">
+        <h1>Admin Profile</h1>
+        <p>Welcome, {{ admin_data.name }}! Manage your profile and settings below.</p>
+    </div>
+
+    <div class="profile-details">
+        <div class="profile-img">
+            <img src="{% static 'images/admin-logo-1.jpg' %}" alt="Admin Profile Picture">
+        </div>
+        <div class="profile-info">
+            
+            <p>Name: {{ admin_data.name }}</p>
+            <p>Email: {{ admin_email }}</p>
+            <a href="#' " class="edit-btn">Edit Profile</a>
+        </div>
+    
+
+   
+
+</div>
+    <div class="profile-settings">
+        <!-- Change Password Button -->
+<div class="setting">
+    <h4>Change Password</h4>
+    <p>Secure your account by updating your password regularly.</p>
+    <a href="{% url 'change_password' %}" class="setting-btn">Change Password</a>
+</div>
+
+        <div class="setting">
+            <h4>Manage Users</h4>
+            <p>View and manage system users and permissions.</p>
+            <a href="#" class="setting-btn">Go to User Management</a>
+        </div>
+        <div class="setting">
+            <h4>Admin Settings</h4>
+            <p>Configure system-wide settings and preferences.</p>
+            <a href="#" class="setting-btn">Edit Settings</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

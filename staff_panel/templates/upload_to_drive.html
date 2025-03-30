@@ -1,0 +1,1093 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+   body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #7a0f9bdc;
+    margin: 3rem 0;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.upload-form {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    animation: slideIn 0.8s ease-out;
+}
+
+.upload-form:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+.upload-label {
+    font-size: 1.3rem;
+    color: #7a0f9bdc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background-color: #ffffff;
+    border: 3px dashed #7a0f9bdc;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.upload-label:hover {
+    background-color: #7a0f9bdc;
+    color: white;
+    border-color: white;
+    transform: scale(1.05);
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    background-color: #7a0f9bdc;
+    color: white;
+    border: none;
+    padding: 16px 30px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 25px auto;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.upload-btn:hover {
+    background-color: #a70bd6dc;
+    transform: scale(1.05);
+}
+
+/* Enhanced Progress Bar Container */
+.progress-container {
+    width: 100%;
+    max-width: 650px;
+    margin: 25px auto;
+    background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+    border-radius: 25px;
+    height: 40px;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+/* Enhanced Progress Bar */
+.progress-bar {
+    background: linear-gradient(90deg, #9c0fc7b2, #6c12d3);
+    height: 100%;
+    width: 0%;
+    border-radius: 25px 0 0 25px;
+    transition: width 0.4s ease-in-out;
+    position: relative;
+    animation: glowing 1.5s infinite ease-in-out;
+}
+
+/* Glowing animation for progress bar */
+@keyframes glowing {
+    0% {
+        box-shadow: 0 0 15px rgba(187, 34, 233, 0.6), inset 0 0 10px rgba(148, 12, 211, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(158, 36, 196, 0.6), inset 0 0 10px rgba(148, 12, 211, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(80, 13, 236, 0.5), 0 0 20px rgba(76, 175, 80, 0.4);
+    }
+}
+
+/* Enhanced Progress Percentage */
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 1s ease-out;
+}
+
+/* Add shine animation for percentage */
+@keyframes shine {
+    0% {
+        background-position: -200px;
+    }
+    100% {
+        background-position: 200px;
+    }
+}
+
+.progress-text {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+    background-clip: text; /* Standard property */
+    -webkit-background-clip: text; /* WebKit-based browsers */
+    -moz-background-clip: text; /* Mozilla-based browsers */
+    -o-background-clip: text; /* Older Opera versions */
+    -ms-background-clip: text; /* Older IE versions */
+    -webkit-text-fill-color: transparent; /* Required for WebKit-based browsers */
+    animation: shine 2s linear infinite;
+}
+
+/* Real-time speed animation */
+.upload-speed {
+    font-size: 1rem;
+    color: #7a0f9bdc;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeIn 1.5s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+
+
+/* Tooltip for detailed speed and time remaining */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Floating effect on hover */
+.progress-container:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+
+.file-actions button {
+    background-color: #7a0f9bdc;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.file-actions button:hover {
+    background-color: #7a0f9bdc;
+    transform: scale(1.05);
+}
+
+.file-list-container {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    animation: fadeInUp 1s ease-out;
+}
+
+.file-card {
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(162, 29, 202, 0.781), inset 0 0 10px rgba(148, 12, 211, 0.4);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.file-card a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.file-card .size {
+    color: #777;
+    font-size: 1rem;
+}
+
+.file-card .actions {
+    margin-top: 15px;
+}
+
+.upload-info {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-top: 30px;
+    color: #4CAF50;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.error-message {
+    color: red;
+    font-size: 1.2rem;
+}
+
+/* Keyframes */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Add animations to buttons and icons */
+.upload-btn,
+.file-actions button {
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* Add hover effects on file cards */
+.file-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Floating action button */
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #7a0f9bdc;
+    color: white;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    background-color: #7a0f9bdc;
+}
+
+/* Tooltip for additional information */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 150px;
+    background-color: #7a0f9bdc;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Add animations for the progress bar */
+@keyframes progressAnimation {
+    0% {
+        width: 0%;
+    }
+    50% {
+        width: 50%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.file-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.file-card {
+    background: linear-gradient(135deg, #e3dfe4, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    position: relative;
+}
+
+.file-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.file-header {
+    margin-bottom: 15px;
+}
+
+.file-icon {
+    font-size: 3rem;
+    color: #7a0f9bdc;
+    margin-bottom: 10px;
+}
+
+.file-name a {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.file-name a:hover {
+    color: #7a0f9bdc;
+}
+
+.file-body {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #777;
+}
+
+.file-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+    position: relative;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.btn:active::after {
+    width: 300%;
+    height: 300%;
+}
+
+.preview-btn {
+    background: #7a0f9bdc!important;
+    color: #fff !important;
+    animation: pulse2 1.5s infinite !important;
+}
+
+.preview-btn:hover {
+    background: rgb(135, 4, 187) !important;
+    transform: scale(1.1) !important;
+}
+
+.delete-btn {
+    background: #ff4d4d !important;
+    color: #fff  !important;
+}
+
+.delete-btn:hover {
+    background: #e60000 !important;
+    transform: scale(1.1) !important;
+}
+
+.file-icon {
+    font-size: 3rem;
+    color: #7a0f9bdc;
+    margin-bottom: 10px;
+    transition: transform 0.5s ease, color 0.3s ease;
+    animation: iconPulse 2s infinite ease-in-out;
+}
+
+.file-card:hover .file-icon {
+    transform: rotate(20deg) scale(1.2) !important;
+    color: #7a0f9bdc !important;
+}
+
+@keyframes iconPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes pulse2 {
+    0% {
+        box-shadow: 0 0 10px rgba(202, 68, 255, 0.548);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(197, 50, 255, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(114, 9, 201, 0.726);
+    }
+}
+/* Default Input Styling */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Focus Styling */
+.form-control:focus {
+    border-color: #6200ea; /* Change border color */
+    outline: none;
+    box-shadow: 0 0 8px rgba(98, 0, 234, 0.8); /* Add a glowing effect */
+    background-color: #f9f8ff; /* Slightly change background color */
+}
+
+.file-title{
+    font-size: 22px;
+    font-weight: bold;
+}
+.btn-outline-success {
+        background-color: transparent;
+        color: #9c27b0;
+        border: 2px solid #9c27b0;
+        padding: 12px 24px;
+        font-size: 16px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #9c27b0;
+        color: white;
+        border-color: #9c27b0;
+        transform: scale(1.05);
+    }
+
+    .page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #4a148c;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.page-title i {
+    font-size: 2.5rem;
+}
+
+.animated-icon-left {
+    animation: swingLeft 2s infinite;
+    color: #6a1b9a;
+    text-shadow: 0 0 5px #ab47bc, 0 0 5px #8e24aa;
+}
+
+.animated-icon-right {
+    animation: swingRight 2s infinite;
+    color: #6a1b9a;
+    text-shadow: 0 0 5px #ab47bc, 0 0 5px #6a1b9a;
+}
+
+@keyframes swingLeft {
+    0% {
+        transform: rotate(-15deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-15deg);
+    }
+}
+
+@keyframes swingRight {
+    0% {
+        transform: rotate(15deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(15deg);
+    }
+}
+
+
+</style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<a href="/staff/dashboard" class="btn btn-outline-success" style="margin-top: 20px;">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+</a>
+<h1 class="page-title">
+    <i class="fas fa-book-open animated-icon-left"></i> 
+    Upload Notes and Books 
+    <i class="fas fa-book animated-icon-right"></i>
+   
+</h1>
+
+
+<form id="uploadForm" class="upload-form" method="POST" enctype="multipart/form-data">
+   
+    
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" required class="form-control" placeholder="Enter file title">
+    </div>
+    <div class="file-upload-container">
+        <label for="file" class="upload-label">
+            <i class="fas fa-cloud-upload-alt"></i> Choose file to upload
+        </label>
+        <input type="file" name="file" id="file" required class="file-input">
+    </div>
+    <button type="submit" class="upload-btn">
+        <i class="fas fa-upload"></i> Upload
+    </button>
+</form>
+
+
+
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-text" id="progressText">0%</div>
+</div>
+
+<div class="upload-info" id="uploadInfo"></div>
+<div id="uploadInfo" class="upload-info"></div>
+<div id="uploadSpeed" class="upload-speed"></div>
+<div id="remainingTime" class="upload-speed"></div>
+
+
+<!-- Updated delete form and actions -->
+<ul id="fileList" class="file-list-container ">
+    <!-- List items will be dynamically inserted here -->
+     
+</ul>
+
+
+
+<script>
+  // Handling file upload with improved speed and remaining time
+const uploadForm = document.getElementById('uploadForm');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const uploadInfo = document.getElementById('uploadInfo');
+const uploadSpeed = document.getElementById('uploadSpeed');
+const remainingTime = document.getElementById('remainingTime');
+
+// Track upload speed and start time
+let startTime;
+let previousLoaded = 0;
+let uploadInterval;
+let totalTime = 0;
+let totalSpeed = 0;
+let speedCount = 0;
+let fileSize = 0; // Store the file size for accurate remaining time
+
+// Function to start the progress update interval
+function startProgressUpdate() {
+    uploadInterval = setInterval(function () {
+        if (startTime && previousLoaded > 0) {
+            const currentTime = Date.now();
+            const timeDiff = (currentTime - startTime) / 1000; // time in seconds
+            const bytesPerSecond = (previousLoaded) / timeDiff; // bytes per second
+
+            // Average speed calculation for smoother result
+            totalSpeed += bytesPerSecond;
+            speedCount++;
+            const averageSpeed = totalSpeed / speedCount;
+
+            const speed = formatSpeed(averageSpeed);
+            uploadSpeed.textContent = `Speed: ${speed}`;
+
+            const remainingBytes = fileSize - previousLoaded;
+            // Ensure remaining bytes is not negative
+            const remainingTimeInSeconds = remainingBytes > 0 ? remainingBytes / averageSpeed : 0;
+
+            // Smooth remaining time calculation
+            remainingTime.textContent = `Time remaining: ${formatTime(remainingTimeInSeconds)}`;
+        }
+    }, 500); // Update every 500ms
+}
+
+uploadForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const fileInput = document.getElementById('file');
+    const file = fileInput.files[0];
+    const title = document.getElementById('title').value;  // Get title from input
+
+    if (!file || !title) {  // Check if file and title are provided
+        alert('Please select a file and enter a title.');
+        return;
+    }
+
+    fileSize = file.size;  // Store the file size for accurate calculations
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', title);  // Append the title to form data
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', uploadForm.action, true);
+    xhr.setRequestHeader('X-CSRFToken', csrfToken);
+
+    xhr.upload.addEventListener('progress', function (event) {
+        if (event.lengthComputable) {
+            const percentComplete = Math.round((event.loaded / event.total) * 100);
+            progressBar.style.width = percentComplete + '%';
+            progressText.textContent = percentComplete + '%';
+
+            // Start the progress interval to update speed and remaining time
+            if (!startTime) {
+                startTime = Date.now();
+                startProgressUpdate();
+            }
+
+            // Track the previous loaded bytes
+            previousLoaded = event.loaded;
+        }
+    });
+
+    xhr.addEventListener('load', function () {
+        clearInterval(uploadInterval); // Stop the progress update interval when upload is complete
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Upload Complete';
+                uploadInfo.textContent = response.message;
+
+                // Refresh the page to update file list or show the latest upload
+                setTimeout(function () {
+                    location.reload(); // Refresh page after 2 seconds
+                }, 2000);
+            } else {
+                uploadInfo.textContent = response.message;
+            }
+        } else {
+            uploadInfo.textContent = 'Upload failed. Please try again.';
+        }
+    });
+
+    xhr.addEventListener('error', function () {
+        uploadInfo.textContent = 'An error occurred during upload.';
+    });
+
+    xhr.send(formData);
+});
+
+// Function to format speed in human-readable format
+function formatSpeed(bytesPerSecond) {
+    let units = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+    let unitIndex = 0;
+    while (bytesPerSecond >= 1024 && unitIndex < units.length - 1) {
+        bytesPerSecond /= 1024;
+        unitIndex++;
+    }
+    return `${bytesPerSecond.toFixed(2)} ${units[unitIndex]}`;
+}
+
+// Function to format time remaining in HH:MM:SS format
+function formatTime(seconds) {
+    // Ensure time is not negative and format correctly
+    if (seconds <= 0) {
+        return "0:00:00";
+    }
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+}
+
+
+    
+       // Call refreshFileList when the page loads
+window.onload = refreshFileList;
+
+function refreshFileList() {
+    const deptId = "{{ dept_id }}";  // Django template tag for dept_id
+    const className = "{{ class_name }}";  // Django template tag for class_name
+    const Title = "{{ title }}";
+    console.log("deptId:", deptId);  // Debugging line to check the value of deptId
+    console.log("className:", className);  // Debugging line to check the value of className
+    console.log("Title:", Title);
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', uploadForm.action, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                const files = response.files;
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = ''; // Clear existing list
+
+                files.forEach(file => {
+                    console.log(file); // Log the entire file object to inspect its structure
+
+                    // Use webViewLink as the unique identifier
+                    const fileIdentifier = file.webViewLink;  // Using webViewLink as the ID
+
+                    const sizeInKB = (file.size / 1024).toFixed(2);
+                    const sizeText = sizeInKB > 1024
+                        ? `${(sizeInKB / 1024).toFixed(2)} MB`
+                        : `${sizeInKB} KB`;
+
+                    console.log("fileIdentifier:", fileIdentifier);  // Log fileIdentifier
+
+                    // Update this part where you create the form
+                    const fileId = file.webViewLink.split('/d/')[1].split('/')[0]; // Extracting file ID from webViewLink
+
+const li = document.createElement('li');
+li.innerHTML = `<div class="file-card">
+    <div class="file-header">
+        <i class="fas fa-file-alt file-icon"></i>
+        <h5 class="file-title">Title: ${file.title || 'No title available'}</h5>
+
+        <h3 class="file-name">
+            <a href="${file.webViewLink}" target="_blank">${file.name}</a>
+            
+        </h3>
+    </div>
+    <div class="file-body">
+        <p class="file-size">Size: ${sizeText}</p>
+    </div>
+    <div class="file-actions">
+        <button class="btn preview-btn" onclick="previewFile('${file.webViewLink}')">
+            <i class="fas fa-eye"></i> Preview
+        </button>
+        <form action="/staff/delete_from_drive/${fileId}/${deptId}/${className}/" method="POST" class="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="btn delete-btn">
+                <i class="fas fa-trash-alt"></i> Delete
+            </button>
+        </form>
+    </div>
+</div>
+`;
+fileList.appendChild(li);
+
+                });
+
+            } else {
+                alert('Failed to refresh file list.');
+            }
+        }
+    };
+
+    xhr.onerror = function () {
+        alert('Error fetching file list.');
+    };
+
+    xhr.send();
+}
+
+// Preview file function
+function previewFile(url) {
+    // Check if the URL is a Google Drive URL
+    const isGoogleDrive = url.includes('drive.google.com');
+    
+    if (isGoogleDrive) {
+        const fileId = extractFileId(url); // Extract file ID for Google Drive
+        
+        if (fileId) {
+            const previewUrl = `https://drive.google.com/file/d/${fileId}/preview`; // Google Drive Preview link
+            openPreview(previewUrl); // Open the preview in a modal
+        } else {
+            alert('Invalid Google Drive URL.');
+        }
+    } else {
+        // If not a Google Drive URL, fallback to direct link or other logic
+        openPreview(url);
+    }
+}
+
+// Function to extract file ID from Google Drive URL
+function extractFileId(url) {
+    const regex = /(?:drive\.google\.com\/.*?\/d\/)([\w-]+)/;
+    const matches = url.match(regex);
+    return matches ? matches[1] : null;
+}
+
+// Function to open the file preview with improved design
+function openPreview(previewUrl) {
+    // Create the preview container with dark overlay
+    const previewContainer = document.createElement('div');
+    previewContainer.style.position = 'fixed';
+    previewContainer.style.top = 0;
+    previewContainer.style.left = 0;
+    previewContainer.style.width = '100%';
+    previewContainer.style.height = '100%';
+    previewContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    previewContainer.style.zIndex = 9998;
+    previewContainer.style.display = 'flex';
+    previewContainer.style.justifyContent = 'center';
+    previewContainer.style.alignItems = 'center';
+    previewContainer.style.transition = '0.3s';
+    previewContainer.style.padding = '20px';
+
+    // Create the iframe to display the content
+    const iframe = document.createElement('iframe');
+    iframe.src = previewUrl;
+    iframe.style.width = "80%";
+    iframe.style.height = "80%";
+    iframe.style.border = "none";  // Remove border for cleaner preview
+    iframe.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.3)";
+    iframe.style.borderRadius = "8px";  // Round corners for aesthetic look
+    previewContainer.appendChild(iframe);
+
+    // Navigation buttons (Next and Previous)
+    const navButtons = document.createElement('div');
+    navButtons.style.position = 'absolute';
+    navButtons.style.top = '50%';
+    navButtons.style.left = '50%';
+    navButtons.style.transform = 'translate(-50%, -50%)';
+    navButtons.style.display = 'flex';
+    navButtons.style.justifyContent = 'space-between';
+    navButtons.style.width = '100%';
+    navButtons.style.zIndex = 9999;
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevButton.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+    prevButton.style.color = 'white';
+    prevButton.style.border = 'none';
+    prevButton.style.padding = '10px 20px';
+    prevButton.style.borderRadius = '5px';
+    prevButton.style.cursor = 'pointer';
+    prevButton.style.transition = '0.3s';
+    prevButton.addEventListener('click', function() {
+        // Navigate to previous page for PDF
+        navigatePDF(-1);
+    });
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextButton.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+    nextButton.style.color = 'white';
+    nextButton.style.border = 'none';
+    nextButton.style.padding = '10px 20px';
+    nextButton.style.borderRadius = '5px';
+    nextButton.style.cursor = 'pointer';
+    nextButton.style.transition = '0.3s';
+    nextButton.addEventListener('click', function() {
+        // Navigate to next page for PDF
+        navigatePDF(1);
+    });
+
+    navButtons.appendChild(prevButton);
+    navButtons.appendChild(nextButton);
+    previewContainer.appendChild(navButtons);
+
+    // Add the preview container to the body
+    document.body.appendChild(previewContainer);
+
+    // Close preview on click
+    previewContainer.addEventListener('click', function (e) {
+        // Prevent closing if the click is on the iframe or navigation buttons
+        if (e.target === iframe || e.target === prevButton || e.target === nextButton) {
+            return;
+        }
+        document.body.removeChild(previewContainer);
+    });
+}
+
+// Global variables to manage the current page for the PDF
+let currentPage = 1;
+let pdfDoc = null;
+
+// Function to navigate through the PDF pages
+function navigatePDF(direction) {
+    currentPage += direction;
+
+    if (currentPage < 1) currentPage = 1;
+    if (pdfDoc && currentPage <= pdfDoc.numPages) {
+        renderPage(currentPage);
+    }
+}
+
+// Function to render a specific page of the PDF using PDF.js
+function renderPage(pageNum) {
+    pdfDoc.getPage(pageNum).then(function(page) {
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale: scale });
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        page.render({ canvasContext: context, viewport: viewport }).promise.then(function() {
+            const iframe = document.querySelector('iframe');
+            iframe.contentWindow.document.body.innerHTML = ''; // Clear the iframe content
+            iframe.contentWindow.document.body.appendChild(canvas); // Append the rendered page as a canvas
+        });
+    });
+}
+
+// Function to initialize PDF.js and load the PDF
+function initializePDF(pdfUrl) {
+    pdfjsLib.getDocument(pdfUrl).promise.then(function(doc) {
+        pdfDoc = doc;
+        renderPage(currentPage);
+    });
+}
+
+    
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
+{% endblock %}

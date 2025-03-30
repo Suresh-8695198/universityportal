@@ -1,0 +1,185 @@
+{% load static %}
+{% block content %}
+    <style>
+        @page { 
+            size: A4 landscape; 
+            margin: 0; /* Remove extra margin */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            background: url("{{ cert_bg }}") no-repeat center center;
+            background-size: cover;
+        }
+
+        /* A4 landscape format */
+        .certificate-container {
+            width: 1123px; /* A4 landscape width */
+            height: 695px; /* A4 landscape height */
+            padding: 20px; /* Adjust padding */
+            border: 30px solid #4B0082; /* Dark Purple */
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            background: url("{{ cert_bg }}") no-repeat center center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly; /* Ensure even space distribution */
+            align-items: center;
+            box-sizing: border-box; /* Ensure everything fits properly */
+            position: relative;
+        }
+
+        .certificate-header {
+            font-size: 3rem;
+            color: #C71585; /* Dark Pink */
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px; /* Adjust space below header */
+        }
+
+        .certificate-body {
+            font-size: 1.4rem;
+            color: #020003; /* Dark Purple */
+            width: 80%;
+            line-height: 1.5; /* Adjust line height */
+        }
+
+        .certificate-footer {
+            font-size: 1.1rem;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            flex-wrap: wrap;
+            position: relative;
+            margin-bottom: 40px; /* Adjust positioning */
+        }
+     
+
+        .certificate-logo-container {
+            display: flex;
+            justify-content: center; /* Centers the logos */
+            align-items: center; 
+            gap: 20px; /* Space between logos */
+            margin-bottom: 10px; /* Space below logos */
+        }
+
+        .certificate-logo {
+            width: 200px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        .web-logo {
+            width: 100px; /* Adjust size as needed */
+            height: 100px;
+            background: none !important; /* Remove any background */
+            border: none; /* Remove border if any */
+        }
+
+        .rank-badge {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #C71585; /* Dark Pink */
+        }
+
+        .signature {
+            text-align: center;
+            width: 400px;
+            font-weight: bold;
+        }
+
+        .signature img {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .gold-text {
+            color: #4B0082; /* Gold */
+            font-weight: bold;
+        }
+
+        .date {
+            font-size: 1.3rem;
+            color: #4B0082; /* Dark Purple */
+            text-align: right;
+            font-weight: bold;
+            margin-right: 40px;
+        }
+
+        .points-badge {
+    position: relative;
+    width: 80px; /* Reduce size */
+    height: 80px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.points-badge img {
+    width: 120px; /* Adjust badge size */
+    height: 120px;
+    object-fit: contain;
+}
+
+.points-badge span {
+    position: relative;
+    color: #C71585; /* White text */
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    
+
+}
+
+    </style>
+
+    <div class="certificate-container">
+        <div class="certificate-logo-container">
+            <img src="{{ logo_url }}" alt="Logo 1" class="certificate-logo">
+            <img src="{{ logo_web }}" alt="Logo 2" class="web-logo">
+        </div>
+        
+        <div class="certificate-header">Certificate of Excellence</div>
+        <div class="certificate-body">
+            <p>This is proudly awarded to</p>
+            <p class="gold-text" style="font-size: 2rem;">{{ student.name }}</p>
+            <p>for outstanding performance as a Continuous Learner in</p>
+            <p class="gold-text">Periyar University Student Portal</p>
+            
+            <div class="rank-badge">
+                {% if rank == 1 %}
+                    🥇 <span class="gold-text">1st Place</span> - Best Performer
+                {% elif rank == 2 %}
+                    🥈 <span style="color: silver;">2nd Place</span> - Excellent Dedication
+                {% elif rank == 3 %}
+                    🥉 <span style="color: #cd7f32;">3rd Place</span> - Great Achiever
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="points-badge">
+            <img src="{{ pts_bg }}" alt="Points Badge">
+          
+        </div>
+        
+        <div class="certificate-footer">
+            
+            <div class="signature">
+                <img src="{% static 'images/signature.png' %}" alt="Signature">
+                <p>Prof. Dr. R. Jagannathan</p>
+                <p>Vice Chancellor</p>
+            </div>
+            
+
+            <div class="date">
+                Date: {{ student.date|default:"Not Available" }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,354 @@
+{% extends "staff_dashboard.html" %}
+{% block content %}
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+<!-- Swiper.js -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <style>
+        /* Form Styling */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.btn-purple {
+    background: #6a0dad;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+    transition: all 0.3s ease;
+}
+.btn-purple:hover {
+    background: #5a099e;
+    box-shadow: 0 8px 20px rgba(106, 13, 173, 0.6);
+}
+        /* Custom Toastr Styling */
+    .toast-success {
+        background-color: #6a0dad !important;
+        color: white !important;
+        font-weight: bold;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(158, 72, 239, 0.5);
+    }
+    .toast-error {
+        background-color: #f44336 !important;
+        color: white !important;
+        font-weight: bold;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(244, 67, 54, 0.5);
+    }
+    .toast-icon {
+        font-size: 24px;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+    .toast-container {
+        animation: slideInUp 0.5s ease-out;
+    }
+    @keyframes slideInUp {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+
+    /* Custom styles for file preview modal */
+    .file-preview-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .swiper-container {
+        width: 100%;
+        height: 400px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+    }
+
+    /* Glowing animation for buttons */
+    .view-file-btn {
+        position: relative;
+        overflow: hidden;
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        background-color: #6a0dad;
+        color: #fff;
+        border: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .view-file-btn:hover {
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
+        background-color: #6a0dad;
+    }
+
+    /* Glowing animation effect */
+    .view-file-btn:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background-color: rgba(0, 123, 255, 0.4);
+        border-radius: 50%;
+        animation: glowing 1.5s infinite ease-in-out;
+        transform: translate(-50%, -50%);
+    }
+
+    @keyframes glowing {
+        0% {
+            transform: scale(0);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-header {
+        background-color: #6a0dad;
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* Custom Swiper navigation buttons */
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #007bff;
+        font-size: 24px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+        color: #0056b3;
+        transform: scale(1.2);
+    }
+
+    /* Add shadow and smooth border radius to modal */
+    .modal-content {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    </style>
+<div class="container mt-5">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold animate__animated animate__fadeInUp">Post News for {{ department.year }} - {{ department.name }}</h1>
+            <p class="text-muted animate__animated animate__fadeInUp animate__delay-1s">Share updates with all Classes.</p>
+        </div>
+    
+        <!-- Form to Post News -->
+        <form id="upload-news-form" action="{% url 'upload_news_by_department' dept_id=department.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Enter news title" required />
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="5" placeholder="Enter news description" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="attachment" class="form-label">Attachment (Optional)</label>
+                <input type="file" class="form-control" id="attachment" name="attachment" />
+            </div>
+            <button type="submit" class="btn btn-purple btn-lg w-100">Post News</button>
+        </form>
+    </div>
+    
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">Posted News & Announcements</h2>
+    
+<div class="mt-4">
+    <a href="{% url 'delete_all_news' dept_id=department.id %}" class="btn btn-danger btn-lg">Delete All News</a>
+</div>
+    <div class="row">
+        <!-- Individual News Card -->
+        {% for news in news_list %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ news.title }}</h5>
+                    <p class="card-text">{{ news.description }}</p>
+                    <p class="text-muted">
+                        Uploaded by: <strong>{{ news.uploaded_by_name }}</strong><br>
+                        On: {{ news.uploaded_at }}
+                    </p>
+                    
+                    {% if news.file_url %}
+                    <button class="btn btn-primary btn-sm view-file-btn" data-file-type="{{ news.file_type }}" data-file-url="{{ news.file_url }}" data-bs-toggle="modal" data-bs-target="#filePreviewModal">
+                        View Attachment
+                    </button>
+                    {% endif %}
+                    <div class="mt-3">
+                        <a href="{% url 'edit_department_news' dept_id=department.id news_id=news.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'delete_department_news' dept_id=department.id news_id=news.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- File Preview Modal -->
+<div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="file-preview-container">
+                    <div id="swiper-container" class="swiper">
+                        <div class="swiper-wrapper">
+                            <!-- Dynamic slides will be added via JavaScript -->
+                        </div>
+                        <!-- Swiper navigation buttons -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        showDuration: 400,
+        hideDuration: 600,
+        timeOut: 4000,
+        extendedTimeOut: 1000,
+        showEasing: 'swing',
+        hideEasing: 'linear',
+        showMethod: 'fadeIn',
+        hideMethod: 'fadeOut'
+    };
+
+    function showSuccessMessage(message) {
+        toastr.success(`<i class="fa fa-check-circle toast-icon"></i> ${message}`, "Success");
+    }
+
+    function showErrorMessage(message) {
+        toastr.error(`<i class="fa fa-times-circle toast-icon"></i> ${message}`, "Error");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('upload-news-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+            const url = "{% url 'upload_news_by_department' dept_id=department.id %}";
+
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessMessage(data.message || "News uploaded successfully!");
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    showErrorMessage(data.message || "Failed to upload news.");
+                }
+            })
+            .catch(error => {
+                showErrorMessage("An unexpected error occurred.");
+                console.error("Error:", error);
+            });
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const swiper = new Swiper("#swiper-container", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            loop: true,
+        });
+
+        // Handle "View Attachment" button click
+        const viewFileBtns = document.querySelectorAll(".view-file-btn");
+        viewFileBtns.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                const fileUrl = btn.dataset.fileUrl;
+                const swiperWrapper = document.querySelector(".swiper-wrapper");
+
+                // Clear previous slides
+                swiperWrapper.innerHTML = "";
+
+                if (fileUrl.includes("drive.google.com")) {
+                    const fileId = fileUrl.split('/d/')[1].split('/')[0];
+
+                    // Determine if it's an image or other file type
+                    if (fileUrl.match(/\.(jpg|jpeg|png|gif)$/)) {
+                        swiperWrapper.innerHTML = `<div class="swiper-slide"><img src="https://drive.google.com/uc?export=view&id=${fileId}" class="img-fluid" alt="Image Preview"></div>`;
+                    } else if (fileUrl.match(/\.pdf$/)) {
+                        swiperWrapper.innerHTML = `<div class="swiper-slide"><iframe src="https://drive.google.com/file/d/${fileId}/preview" width="100%" height="600px" frameborder="0"></iframe></div>`;
+                    } else {
+                        // Use Google Docs Viewer for PPT, Word, Excel, etc.
+                        swiperWrapper.innerHTML = `<div class="swiper-slide"><iframe src="https://drive.google.com/file/d/${fileId}/preview" width="100%" height="600px" frameborder="0"></iframe></div>`;
+                    }
+                } else {
+                    swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Preview not available for this file type.</p></div>`;
+                }
+
+                swiper.update();
+            });
+        });
+    });
+</script>
+{% endblock %}

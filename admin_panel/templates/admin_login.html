@@ -1,0 +1,287 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles */
+        body {
+            background: linear-gradient(135deg, #6a1b9a, #4e148c); /* Purple and dark violet gradient background */
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Fullscreen Particles Container */
+        #particles-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Keep it behind other elements */
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            background: #ffffff;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #6a1b9a;
+            color: white;
+            font-size: 1.8rem;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4e148c;
+        }
+
+        .form-control {
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #6a1b9a;
+            box-shadow: 0 0 5px rgba(106, 27, 154, 0.5);
+        }
+
+        .btn-primary {
+            background-color: #6a1b9a;
+            border-color: #4e148c;
+            font-weight: 600;
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            width: 100%;
+            color: white;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #4e148c;
+            border-color: #370e61;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            color: white;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .alert-danger {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: black;
+        }
+
+        .footer a {
+            color: #6a1b9a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card {
+                padding: 2rem;
+            }
+
+            .card-header {
+                font-size: 1.6rem;
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fullscreen Particles -->
+    <div id="particles-js"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="card shadow-lg">
+            <!-- Card Header -->
+            <div class="card-header">
+                <h3><i class="fas fa-user-shield"></i> Admin Login</h3>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+                <form method="POST" action="{% url 'admin_login' %}">
+                    {% csrf_token %}
+                    <!-- Email Input -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control" required placeholder="Enter your email">
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required placeholder="Enter your password">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">Login</button>
+
+                    <!-- Error Message -->
+                    {% if error %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                    </div>
+                    {% endif %}
+                </form>
+
+                <!-- Forgot Password Link -->
+                <div class="footer mt-4">
+                    <p>Forgot your password? <a href="{% url 'admin_forgot_password' %}">Reset it here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        // Particles.js Configuration with Star Effect
+        particlesJS("particles-js", {
+            particles: {
+                number: {
+                    value: 100, // Increased number for more stars
+                    density: {
+                        enable: true,
+                        value_area: 900
+                    }
+                },
+                color: {
+                    value: "#ffffff" // Star color
+                },
+                shape: {
+                    type: "circle", // Use circles to simulate stars
+                    stroke: {
+                        width: 0,
+                        color: "#ffffff"
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3, // Small size for star-like particles
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 25,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 2
+                },
+                move: {
+                    enable: true,
+                    speed: 4,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "grab"
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+
+    <!-- Bootstrap 5 JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

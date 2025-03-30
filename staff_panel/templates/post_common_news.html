@@ -1,0 +1,591 @@
+{% extends "staff_dashboard.html" %}
+{% block content %}
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+<!-- Swiper.js -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <style>
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f3e6ff, #ffffff);
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Form Styling */
+form {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Buttons */
+.btn-purple {
+    background: linear-gradient(135deg, #6a0dad, #8a2be2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 30px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 15px rgba(106, 13, 173, 0.4);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-purple:hover {
+    background: linear-gradient(135deg, #8a2be2, #6a0dad);
+    box-shadow: 0 12px 25px rgba(106, 13, 173, 0.6);
+    transform: scale(1.05);
+}
+
+.btn-purple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
+    z-index: 1;
+}
+
+.btn-purple:hover::before {
+    width: 300%;
+    height: 300%;
+    opacity: 0;
+}
+
+/* Toastr Notifications */
+.toast-success {
+    background: linear-gradient(135deg, #6a0dad, #8a2be2) !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(158, 72, 239, 0.5);
+    animation: toastSlideIn 0.8s ease-in-out;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #f44336, #e53935) !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.5);
+    animation: toastSlideIn 0.8s ease-in-out;
+}
+
+@keyframes toastSlideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* File Preview Modal */
+.file-preview-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.swiper-container {
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+/* Buttons with Glow */
+.view-file-btn {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #007bff, #00c6ff);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.5);
+    transition: all 0.4s ease-in-out;
+}
+
+.view-file-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #007bff);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.8);
+    transform: translateY(-2px);
+}
+
+.view-file-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
+}
+
+.view-file-btn:hover::before {
+    width: 300%;
+    height: 300%;
+    opacity: 0;
+}
+
+/* Modal Header */
+.modal-header {
+    background: linear-gradient(135deg, #6a0dad, #8a2be2);
+    color: white;
+    text-align: center;
+    padding: 25px;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* Modal Content */
+.modal-content {
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom Swiper Navigation */
+.swiper-button-next,
+.swiper-button-prev {
+    color: #007bff;
+    font-size: 28px;
+    transition: all 0.3s ease-in-out;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    color: #0056b3;
+    transform: scale(1.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Section Title */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #6a0dad;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeInDown 1s ease-in-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+
+/* News Card */
+.news-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    background: #ffffff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    height: 100%;
+    animation: zoomIn 0.8s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.news-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Card Header */
+.card-header {
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #6a0dad, #8a2be2);
+    color: white;
+    text-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 5px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+    flex: 1;
+}
+
+.card-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 15px;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: auto;
+}
+
+/* Buttons */
+.btn-glow {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.4s ease-in-out;
+    color: white;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.btn-glow-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+.btn-glow-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.8);
+}
+
+.btn-glow-warning {
+   
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.5);
+}
+
+.btn-glow-warning:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.8);
+}
+
+.btn-glow-danger {
+    background: linear-gradient(135deg, #f44336, #e53935);
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.5);
+}
+
+.btn-glow-danger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.8);
+}
+
+/* Animation for Buttons */
+.btn-glow::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: glowingEffect 1.5s infinite ease-in-out;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+@keyframes glowingEffect {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+    }
+
+    .news-card {
+        height: auto;
+    }
+}
+
+    </style>
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold animate__animated animate__fadeInUp">Post Common News</h1>
+        <p class="text-muted animate__animated animate__fadeInUp animate__delay-1s">Share updates with all Classes.</p>
+    </div>
+
+    <!-- Form to Post News -->
+    <form id="upload-news-form" action="{% url 'upload_news' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Enter news title" required />
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="5" placeholder="Enter news description" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="attachment" class="form-label">Attachment (Optional)</label>
+            <input type="file" class="form-control" id="attachment" name="attachment" />
+        </div>
+        <button type="submit" class="btn btn-purple btn-lg w-100">Post News</button>
+    </form>
+</div>
+
+<div class="container mt-5">
+    <h2 class="mb-5 text-center section-title">📢 Posted News & Announcements</h2>
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'delete_all_news' %}" class="btn btn-danger btn-lg btn-glow-red">
+            <i class="fas fa-trash-alt"></i> Delete All News
+        </a>
+    </div>
+    <div class="row">
+        <!-- Individual News Card -->
+        {% for news in news_list %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card news-card shadow-lg border-0">
+                <div class="card-header bg-gradient-purple text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-bullhorn me-2"></i>{{ news.title }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text fs-5">{{ news.description }}</p>
+                    <p class="text-muted small mb-3">
+                        <i class="fas fa-user me-1"></i> Uploaded by: <strong>{{ news.uploaded_by_name }}</strong><br>
+                        <i class="fas fa-calendar-alt me-1"></i> On: {{ news.uploaded_at }}
+                    </p>
+                    {% if news.file_url %}
+                    <button class="btn btn-primary btn-glow btn-sm view-file-btn" data-file-type="{{ news.file_type }}" data-file-url="{{ news.file_url }}" data-bs-toggle="modal" data-bs-target="#filePreviewModal">
+                        <i class="fas fa-eye"></i> View Attachment
+                    </button>
+                    {% endif %}
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'edit_news' news.id %}" class="btn btn-warning btn-md btn-glow-yellow">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'delete_news' news.id %}" class="btn btn-danger btn-md btn-glow-red">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- File Preview Modal -->
+<div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="file-preview-container">
+                    <div id="swiper-container" class="swiper">
+                        <div class="swiper-wrapper">
+                            <!-- Dynamic slides will be added via JavaScript -->
+                        </div>
+                        <!-- Swiper navigation buttons -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Optimize toastr to reduce DOM manipulation and avoid blocking
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        showDuration: 400,
+        hideDuration: 600,
+        timeOut: 4000,
+        extendedTimeOut: 1000,
+        showEasing: 'swing',
+        hideEasing: 'linear',
+        showMethod: 'fadeIn',
+        hideMethod: 'fadeOut'
+    };
+
+    function showSuccessMessage(message) {
+        toastr.success(`<i class="fa fa-check-circle toast-icon"></i> ${message}`, "Success");
+    }
+
+    function showErrorMessage(message) {
+        toastr.error(`<i class="fa fa-times-circle toast-icon"></i> ${message}`, "Error");
+    }
+
+    // Optimized form submission with fetch API
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('upload-news-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+            const url = "{% url 'upload_news' %}";
+
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessMessage(data.message || "News uploaded successfully!");
+                    setTimeout(() => location.reload(), 2000);  // Refresh the page after success
+                } else {
+                    showErrorMessage(data.message || "Failed to upload news.");
+                }
+            })
+            .catch(error => {
+                showErrorMessage("An unexpected error occurred.");
+                console.error("Error:", error);
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const viewFileBtns = document.querySelectorAll(".view-file-btn");
+    const swiperWrapper = document.querySelector(".swiper-wrapper");
+
+    viewFileBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const fileUrl = btn.dataset.fileUrl;
+            swiperWrapper.innerHTML = ""; // Clear previous slides
+
+            // Extract Google Drive File ID
+            const fileId = extractGoogleDriveFileId(fileUrl);
+
+            if (fileId) {
+                if (fileUrl.match(/\.(jpg|jpeg|png|gif)$/)) {
+                    swiperWrapper.innerHTML = `<div class="swiper-slide"><img src="https://drive.google.com/uc?export=view&id=${fileId}" class="img-fluid" alt="Image Preview"></div>`;
+                } else if (fileUrl.match(/\.pdf$/)) {
+                    swiperWrapper.innerHTML = `<div class="swiper-slide"><iframe src="https://drive.google.com/file/d/${fileId}/preview" width="100%" height="600px" frameborder="0"></iframe></div>`;
+                } else {
+                    swiperWrapper.innerHTML = `<div class="swiper-slide"><iframe src="https://drive.google.com/file/d/${fileId}/preview" width="100%" height="600px" frameborder="0"></iframe></div>`;
+                }
+            } else {
+                swiperWrapper.innerHTML = `<div class="swiper-slide"><p>Preview not available for this file type or URL.</p></div>`;
+            }
+
+            swiper.update(); // Ensure Swiper is updated after adding slides
+        });
+    });
+
+    function extractGoogleDriveFileId(url) {
+        const match = url.match(/\/d\/([^/]+)/) || url.match(/id=([^&]+)/);
+        return match ? match[1] : null;
+    }
+});
+
+</script>
+
+<!-- Minified Bootstrap and Icons for Faster Loading -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" defer></script>
+{% endblock %}

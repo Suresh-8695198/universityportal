@@ -1,0 +1,25 @@
+{% extends "staff_dashboard.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">News & Announcements</h2>
+    <div class="row">
+        {% for news in news_list %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ news.title }}</h5>
+                    <p class="card-text">{{ news.description }}</p>
+                    <p class="text-muted">
+                        Uploaded by: {{ news.uploaded_by }}<br>
+                        On: {{ news.uploaded_at }}
+                    </p>
+                    {% if news.file_url %}
+                    <a href="{{ news.file_url }}" class="btn btn-primary" target="_blank">View Attachment</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

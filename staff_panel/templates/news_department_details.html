@@ -1,0 +1,73 @@
+{% extends "staff_dashboard.html" %}
+{% block content %}
+<!-- Main Container -->
+<div class="container mt-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+     <h1 class="fw-bold glowing-text">{{ department.year }} - {{ department.name }}</h1>
+     <p class="text-muted">Stay informed with the latest news and announcements for each classes.</p>
+
+ 
+       <!-- Back Button -->
+       <div class="text-center mt-4">
+         <a href="javascript:history.back()" class="btn btn-secondary glowing-btn">
+             <i class="fas fa-arrow-left"></i> Back
+         </a>
+     </div>
+ </div>
+ <div class="actions mt-4">
+    <!-- Button to Navigate to the Post News Page -->
+    <a href="{% url 'post_news_page' dept_id %}" class="btn btn-primary">Post News</a>
+</div>
+ <!-- Students Section -->
+ <div class="card shadow-lg border-0 mb-4">
+    <div class="card-header bg-gradient text-white fw-bold">
+        <i class="fas fa-users"></i> Students
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th><i class="fas fa-id-badge"></i> Roll Number</th>
+                    <th><i class="fas fa-user"></i> Name</th>
+                    <th><i class="fas fa-envelope"></i> Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr class="table-row-hover">
+                    <td>{{ student.roll_number }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+</div>
+
+
+<style>
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+    margin: 20px 0;
+}
+input, textarea, button {
+    padding: 10px;
+    font-size: 1rem;
+}
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+</style>
+{% endblock %}

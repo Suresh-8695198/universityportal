@@ -1,0 +1,4 @@
+django
+firebase-admin
+cloudinary
+django-widget-tweaks

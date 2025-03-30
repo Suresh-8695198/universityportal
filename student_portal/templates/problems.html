@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Battle Problems</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+       /* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle, #140033 40%, #0d001a);
+    color: #fff;
+}
+
+/* Title Styling */
+h1 {
+    font-size: 3rem;
+    color: #fff;
+    text-shadow: 0 0 10px #9a00ff, 0 0 20px #6d00cc;
+    animation: glow 1.5s infinite alternate;
+    text-align:center;
+}
+
+/* Problems Grid */
+.problems-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Problem Card */
+.problem-card {
+    background: rgba(25, 0, 51, 0.4); /* Glass effect */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(154, 0, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(154, 0, 255, 0.2);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.problem-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(154, 0, 255, 0.5);
+}
+
+.problem-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 2px solid rgba(154, 0, 255, 0.6);
+}
+
+/* Level Tag */
+.level-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(45deg, #6d00cc, #9a00ff);
+    color: #fff;
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    box-shadow: 0 0 10px rgba(154, 0, 255, 0.7);
+}
+
+/* Animated Glow */
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #9a00ff, 0 0 20px #6d00cc;
+    }
+    to {
+        text-shadow: 0 0 20px #6d00cc, 0 0 30px #9a00ff;
+    }
+}
+
+/* Footer */
+.footer {
+    text-align:center;
+    margin-top: 40px;
+    font-size: 1rem;
+    color: #b399ff;
+}
+
+.footer a {
+    color: #9a00ff;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    color: #6d00cc;
+}
+
+        /* Circular button styling */
+        .button--circular {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50% !important;
+            background-color: #f0f2f5; /* Light mode background */
+            color: #333; /* Light mode icon color */
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        body.dark-mode .button--circular {
+            background-color: #333; /* Dark mode background */
+            color: #f0f2f5; /* Dark mode icon color */
+        }
+
+        .button--circular:hover {
+            box-shadow: 0 0 15px #9a00ff;
+        }
+
+        /* Icon transition */
+        #mode-icon {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode #mode-icon {
+            transform: rotate(180deg); /* Rotate for Moon icon */
+        }
+        
+        body.light-mode .color-codes {
+            background-color: #f8f9fa;
+        }
+
+        body.dark-mode .color-codes {
+            background-color: #282c34;
+        }
+
+        button#mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode button#mode-toggle {
+            background-color: #333;
+            color: #fff;
+        }
+
+        body.dark-mode button#mode-toggle {
+            background-color: #fff;
+            color: #333;
+        }
+
+        body.dark-mode {
+    background: #ecf0f1;
+    color:black ;
+}
+
+body.dark-mode h1 {
+   
+    font-size: 3rem;
+    color: #6d00cc;
+    text-align:center;
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff;
+    animation: glow1 1.5s infinite alternate;
+
+}
+body.dark-mode .problem-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 3px solid #6d00cc;
+}
+/* Animated Glow */
+@keyframes glow1 {
+    from {
+        text-shadow: 0 0 10px #ffffff, 0 0 20px #0707bb;
+    }
+    to {
+        text-shadow: 0 0 20px #7f0bcc, 0 0 30px #ffffff;
+    }
+}
+body.dark-mode .problem-card {
+    background: black; /* Glass effect */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(154, 0, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(154, 0, 255, 0.2);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+  
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS TASKS</h1>
+        <button id="mode-toggle" aria-label="Toggle Dark Mode" class="button button--circular">
+            <svg id="mode-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <!-- Default Sun Icon -->
+                <circle cx="12" cy="12" r="5"></circle>
+                <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="12" y1="1" x2="12" y2="4"></line>
+                    <line x1="12" y1="20" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="4" y2="12"></line>
+                    <line x1="20" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </g>
+            </svg>
+          
+        </button>
+        <div class="problems-list">
+            {% if problems %}
+                {% for problem in problems %}
+                <div class="problem-card" onclick="window.location.href='{% url 'css_battle' problem.id %}'">
+                    <div class="level-label">Level {{ forloop.counter }}</div>
+                    <img src="{{ problem.image_url }}" alt="{{ problem.title }}">
+                   
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No problems found.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="footer">
+        <p>Powered by <a href="#">Periyar University Student Portal</a></p>
+    </div>
+    <script>
+        const modeToggle = document.getElementById('mode-toggle');
+        const body = document.body;
+        const modeIcon = document.getElementById('mode-icon');
+    
+        // Load the saved mode from localStorage
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            updateIcon(true);
+        }
+    
+        modeToggle.addEventListener('click', () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+    
+            // Save preference
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    
+            // Update the icon
+            updateIcon(isDarkMode);
+        });
+    
+        function updateIcon(isDarkMode) {
+            if (isDarkMode) {
+                modeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1111.21 3a7 7 0 1010.58 9.79z"></path>`;
+            } else {
+                modeIcon.innerHTML = `
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="12" y1="1" x2="12" y2="4"></line>
+                        <line x1="12" y1="20" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="4" y2="12"></line>
+                        <line x1="20" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </g>
+                `;
+            }
+        }
+    </script>
+    
+</body>
+</html>

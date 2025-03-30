@@ -1,0 +1,411 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Custom Styles for Gamified Certifications Page -->
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #121212;
+        color: #f0f0f0;
+
+        background: linear-gradient(135deg, #121212, #1e1e1e);
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 30px;
+    }
+
+    .title-with-icon {
+        font-size: 48px;
+        font-weight: 700;
+        color: #f5a623;
+        text-align: center;
+        margin-bottom: 50px;
+        animation: glowTitle 2s infinite alternate;
+    }
+
+    @keyframes glowTitle {
+        0% {
+            text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 30px #ff8c00, 0 0 40px #ff8c00;
+        }
+        100% {
+            text-shadow: 0 0 15px #f5a623, 0 0 25px #f5a623, 0 0 35px #f5a623, 0 0 45px #f5a623;
+        }
+    }
+
+    /* Section Titles */
+    .section-title {
+        font-size: 36px;
+        color: #ff6347; /* Modern warm color */
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        animation: fadeInSection 1s ease-in-out;
+    }
+
+    @keyframes fadeInSection {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Glassmorphism Card Styles */
+    .certificate-card {
+        background: rgba(0, 0, 0, 0.8); /* Glass effect */
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        margin-bottom: 40px;
+        box-shadow: 0 8px 30px rgba(0, 255, 255, 0.2);
+        position: relative;
+        transition: all 0.4s ease-in-out;
+        animation: fadeInCard 0.8s ease-in-out;
+    }
+
+    @keyframes fadeInCard {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .certificate-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(0, 255, 255, 0.3);
+        background: rgba(0, 255, 255, 0.2);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 26px;
+        color: #fff;
+        font-weight: bold;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        animation: glowText 2s infinite alternate;
+    }
+
+    /* Icon Animation */
+    @keyframes glowText {
+        0% {
+            text-shadow: 0 0 5px #ff6347, 0 0 10px #ff6347, 0 0 20px #ff6347;
+        }
+        100% {
+            text-shadow: 0 0 15px #f5a623, 0 0 25px #f5a623, 0 0 35px #f5a623;
+        }
+    }
+    /* Custom Button Styles for Download */
+.download-btn {
+    width: 220px;
+    height: 55px;
+    background: linear-gradient(145deg, #ff6347, #f5a623);
+    border-radius: 30px;
+    box-shadow: 0 6px 15px rgba(0, 255, 255, 0.3);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.download-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.4);
+    background: linear-gradient(145deg, #f5a623, #ff6347);
+}
+
+.download-btn i {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.download-btn:hover i {
+    transform: rotate(15deg);
+}
+
+.download-btn:active {
+    transform: scale(0.98);
+}
+
+/* Individual Button Color Variations */
+.download-btn-completed {
+    background: linear-gradient(145deg, #ff6347, #ff4500);
+}
+
+.download-btn-completed:hover {
+    background: linear-gradient(145deg, #ff4500, #ff6347);
+}
+
+.download-btn-weekly {
+    background: linear-gradient(145deg, #f5a623, #ff8c00);
+}
+
+.download-btn-weekly:hover {
+    background: linear-gradient(145deg, #ff8c00, #f5a623);
+}
+
+.download-btn-trending {
+    background: linear-gradient(145deg, #1e90ff, #4682b4);
+}
+
+.download-btn-trending:hover {
+    background: linear-gradient(145deg, #4682b4, #1e90ff);
+}
+
+.download-btn-participation {
+    background: linear-gradient(145deg, #32cd32, #3cb371);
+}
+
+.download-btn-participation:hover {
+    background: linear-gradient(145deg, #3cb371, #32cd32);
+}
+
+
+    .card-text {
+        font-size: 18px;
+        color: #f0f0f0;
+        margin-top: 15px;
+    }
+
+    .badge {
+        font-size: 14px;
+        margin-right: 12px;
+        display: inline-block;
+        margin-bottom: 15px;
+        padding: 8px 16px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        background: #1e90ff;
+    }
+
+    .badge-success {
+        background: #00fa9a;
+    }
+
+    .badge-primary {
+        background: #1e90ff;
+    }
+
+    .badge-warning {
+        background: #ffcc00;
+    }
+
+    .badge-info {
+        background: #7fff00;
+    }
+
+    /* Button Styling */
+    .btn-gradient {
+        width: 220px;
+        height: 55px;
+        background: linear-gradient(145deg, #ff6347, #f5a623);
+        border-radius: 30px;
+        box-shadow: 0 6px 15px rgba(0, 255, 255, 0.3);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 25px;
+        transition: all 0.4s ease;
+        cursor: pointer;
+    }
+
+    .btn-gradient:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 255, 255, 0.4);
+        background: linear-gradient(145deg, #f5a623, #ff6347);
+    }
+
+    .btn-gradient i {
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-gradient:hover i {
+        transform: rotate(15deg);
+    }
+
+    /* Icon Styling */
+    .bi {
+        font-size: 30px;
+        transition: transform 0.3s ease;
+    }
+
+    .bi:hover {
+        transform: scale(1.2);
+        color: #ff6347; /* Tomato red for hover effect */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .title-with-icon {
+            font-size: 36px;
+        }
+
+        .certificate-card {
+            padding: 15px;
+        }
+    }
+    
+</style>
+
+<!-- Page Title and Header -->
+<div class="container mt-5">
+    <h1 class="title-with-icon mb-4">
+        <i class="bi bi-award "></i> Certifications
+    </h1>
+
+    <!-- Completed Tasks Certification Section -->
+    <div class="section">
+        <h2 class="section-title">Completed Tasks Certifications</h2>
+
+        <!-- Certificate Card 1 -->
+        <div class="certificate-card card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-person-check text-success"></i> Student: Nagarajan S
+                </h5>
+                <p class="card-text">Congratulations! You have earned a certificate for completing the "Array Sum" task.</p>
+                <div class="badge badge-primary">Task Completed</div>
+                <div class="badge badge-success">Certification Awarded</div>
+                <button class="download-btn download-btn-completed">
+                    <i class="bi bi-download"></i> Download Certificate
+                </button>
+            </div>
+        </div>
+
+        <!-- Add more completed task certificates as needed -->
+    </div>
+
+    <!-- Weekly Winners Certification Section -->
+    <div class="section">
+        <h2 class="section-title">Weekly Winners</h2>
+
+        <!-- Certificate Card 2 -->
+        <div class="certificate-card card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-trophy text-warning"></i> Weekly Winner: Dhanush D
+                </h5>
+                <p class="card-text">You are the weekly winner for the best solution provided in the "Factorial" problem.</p>
+                <div class="badge badge-success">Top Performer</div>
+                <div class="badge badge-info">Weekly Winner</div>
+                <button class="download-btn download-btn-weekly">
+                    <i class="bi bi-download"></i> Download Certificate
+                </button>
+            </div>
+        </div>
+        <div class="section">
+            <h2 class="section-title">Weekly Winners</h2>
+    
+            <!-- Certificate Card 2 -->
+            <div class="certificate-card card shadow-lg mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-trophy text-warning"></i> Weekly Winner: Soundharya I
+                    </h5>
+                    <p class="card-text">You are the weekly winner for the best solution provided in the "Factorial" problem.</p>
+                    <div class="badge badge-success">Top Performer</div>
+                    <div class="badge badge-info">Weekly Winner</div>
+                    <button class="download-btn download-btn-weekly">
+                        <i class="bi bi-download"></i> Download Certificate
+                    </button>
+                </div>
+            </div>
+    
+
+        <!-- Add more weekly winner certificates as needed -->
+    </div>
+
+    <!-- Top Trending Students Certification Section -->
+    <div class="section">
+        <h2 class="section-title">Top Trending Students</h2>
+
+        <!-- Certificate Card 3 -->
+        <div class="certificate-card card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-trending-up text-info"></i> Student: Vasunthara S
+                </h5>
+                <p class="card-text">You are one of the top trending students based on your contributions across various problems.</p>
+                <div class="badge badge-primary">Top Contributor</div>
+                <div class="badge badge-info">Trending Student</div>
+                <button class="download-btn download-btn-trending">
+                    <i class="bi bi-download"></i> Download Certificate
+                </button>
+            </div>
+        </div>
+          <!-- Certificate Card 3 -->
+          <div class="certificate-card card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-trending-up text-info"></i> Student: Hari Gayathiri M
+                </h5>
+                <p class="card-text">You are one of the top trending students based on your contributions across various problems.</p>
+                <div class="badge badge-primary">Top Contributor</div>
+                <div class="badge badge-info">Trending Student</div>
+                <button class="download-btn download-btn-trending">
+                    <i class="bi bi-download"></i> Download Certificate
+                </button>
+            </div>
+        </div>
+
+        <!-- Add more top trending students certificates as needed -->
+    </div>
+
+    <!-- Participation Certificates Section -->
+    <div class="section">
+        <h2 class="section-title">Participation Certificates</h2>
+
+        <!-- Certificate Card 4 -->
+        <div class="certificate-card card shadow-lg mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-person text-primary"></i> Student: Suresh G
+                </h5>
+                <p class="card-text">Thank you for your participation in solving problems and contributing to discussions.</p>
+                <div class="badge badge-success">Participation</div>
+                <div class="badge badge-primary">Certificate Awarded</div>
+                <button class="download-btn download-btn-participation">
+                    <i class="bi bi-download"></i> Download Certificate
+                </button>
+            </div>
+        </div>
+
+        <!-- Add more participation certificates as needed -->
+    </div>
+
+</div>
+
+{% endblock %}

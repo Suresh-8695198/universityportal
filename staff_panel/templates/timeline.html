@@ -1,0 +1,189 @@
+<!-- templates/timeline.html -->
+<div class="timeline-container">
+    <ul class="timeline">
+        <li class="{% if request.resolver_match.url_name == 'question_background' %}active{% endif %}">
+            <div class="icon-container">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <span>Background</span>
+        </li>
+        <li class="{% if request.resolver_match.url_name == 'question_details' %}active{% endif %}">
+            <div class="icon-container">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+            <span>Details</span>
+        </li>
+        <li class="{% if request.resolver_match.url_name == 'question_solution' %}active{% endif %}">
+            <div class="icon-container">
+                <i class="fas fa-cogs"></i>
+            </div>
+            <span>Solution</span>
+        </li>
+        <li class="{% if request.resolver_match.url_name == 'question_testcases' %}active{% endif %}">
+            <div class="icon-container">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <span>Test Cases</span>
+        </li>
+        <li class="{% if request.resolver_match.url_name == 'submit_question' %}active{% endif %}">
+            <div class="icon-container">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <span>Submit</span>
+        </li>
+    </ul>
+</div>
+
+<style>
+/* Container and Timeline Styling */
+.timeline-container {
+    margin: 20px 0;
+    padding: 10px 0;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    counter-reset: step-counter;
+}
+
+/* Individual Timeline Steps */
+.timeline li {
+    text-align: center;
+    position: relative;
+    flex: 1;
+    color: #000000;
+    font-size: 16px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.timeline li:hover {
+    transform: scale(1.1); /* Smooth scaling on hover */
+}
+
+/* Icon Container */
+.timeline li .icon-container {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 10px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d8d8d8; /* Default background */
+    border-radius: 50%;
+    font-size: 22px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Glowing Effect on Hover */
+.timeline li:hover .icon-container {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(119, 3, 173, 0.8); /* Blue glow on hover */
+}
+
+/* Counter Number */
+.timeline li:before {
+    content: counter(step-counter);
+    counter-increment: step-counter;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    margin: 0 auto 10px auto;
+    background: #ddd;
+    border-radius: 50%;
+    color: #030303;
+    font-weight: bold;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Active Step Styles */
+.timeline li.active:before {
+    color: #fff;
+    background: #40058d; /* Active blue */
+    box-shadow: 0 0 15px rgb(153, 34, 233), 0 0 30px rgb(104, 34, 233);
+}
+
+.timeline li.active {
+   
+    color: #7e0eb3;
+    
+}
+
+/* Connecting Line */
+.timeline li:after {
+    content: '';
+    position: absolute;
+    width: 95%;
+    height: 4px;
+    background: #ddd;
+    top: 14px;
+    left: -45%;
+    z-index: -1;
+    transition: background 0.3s ease;
+}
+
+.timeline li:first-child:after {
+    content: none;
+}
+
+.timeline li.active + li:after {
+    background: #7d02c4; /* Active blue line */
+}
+
+/* Animation for Timeline Items */
+.timeline li {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInUp 0.8s forwards;
+}
+
+.timeline li:nth-child(1) {
+    animation-delay: 0.3s;
+}
+
+.timeline li:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.timeline li:nth-child(3) {
+    animation-delay: 0.7s;
+}
+
+.timeline li:nth-child(4) {
+    animation-delay: 0.9s;
+}
+
+.timeline li:nth-child(5) {
+    animation-delay: 1.1s;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Page Swapping Animation */
+body {
+    animation: fadeInBody 1s ease-in-out;
+}
+
+@keyframes fadeInBody {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+</style>

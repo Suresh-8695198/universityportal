@@ -1,0 +1,62 @@
+<div class="modal fade" id="postQuizModal" tabindex="-1" aria-labelledby="postQuizModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="postQuizModalLabel">Post Quiz</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="postQuizForm" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="quizTitle" class="form-label">Quiz Title</label>
+                        <input type="text" class="form-control" id="quizTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quizDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="quizDescription" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quizDeadline" class="form-label">Deadline</label>
+                        <input type="datetime-local" class="form-control" id="quizDeadline" name="deadline" required>
+                    </div>
+                    <div id="questionsContainer">
+                        <div class="mb-3 question">
+                            <label for="question1" class="form-label">Question 1</label>
+                            <input type="text" class="form-control" name="question" required>
+                            <label class="form-label">Options</label>
+                            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 1" required>
+                            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 2" required>
+                            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 3">
+                            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 4">
+                            <label for="correctAnswer1" class="form-label">Correct Answer</label>
+                            <input type="text" class="form-control" name="correct_answer" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addQuestion()">Add Question</button>
+                    <button type="submit" class="btn btn-primary">Post Quiz</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let questionCount = 1;
+    function addQuestion() {
+        questionCount++;
+        const questionHTML = `
+        <div class="mb-3 question">
+            <label for="question${questionCount}" class="form-label">Question ${questionCount}</label>
+            <input type="text" class="form-control" name="question" required>
+            <label class="form-label">Options</label>
+            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 1" required>
+            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 2" required>
+            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 3">
+            <input type="text" class="form-control mb-2" name="options[]" placeholder="Option 4">
+            <label for="correctAnswer${questionCount}" class="form-label">Correct Answer</label>
+            <input type="text" class="form-control" name="correct_answer" required>
+        </div>`;
+        document.getElementById('questionsContainer').insertAdjacentHTML('beforeend', questionHTML);
+    }
+</script>

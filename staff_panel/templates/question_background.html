@@ -1,0 +1,306 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Importing Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<!-- Custom Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Custom Animation Library -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+
+<div class="container py-5">
+    <!-- Timeline included here -->
+    {% include 'timeline.html' %}
+
+     <!-- Back Button -->
+     <button onclick="history.back()" class="btn btn-secondary mb-4">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="row">
+        <!-- Left Column for the Form -->
+        <div class="col-lg-8 col-md-12 mb-4">
+            <!-- Step 1 Header with Icon -->
+            <div class="modern-glow-box p-5 mb-4 wow animate__fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+                <div class="modern-glow-box-body">
+                    <h2 class="title-with-icon">
+                        <i class="fas fa-question-circle icon-animate animate__animated animate__bounceIn"></i> Background of the Question
+                    </h2>
+                    <p><strong>Before you start...</strong><br>
+                       We would like to understand the background of this question and your reasons for contributing it.
+                    </p>
+                    <p>Provide a clear explanation and context for the question you’re contributing.</p>
+                </div>
+            </div>
+
+            <!-- Step 2: Collecting Background Information in Card Style -->
+            <div class="modern-glow-card wow animate__fadeInUp" data-wow-duration="1s">
+                <form method="post" class="modern-glow-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="background">
+                            <i class="fas fa-info-circle icon-animate animate__animated animate__flipInX"></i> Why are you contributing this question?*
+                        </label>
+                        <textarea id="background" name="background" class="form-control" rows="5" required placeholder="Provide complete background information about this question. Where have you seen this question? Was it in a coding challenge, phone screen, or an on-site interview?" oninput="updateWordCount('background')"></textarea>
+                        <div id="background-word-count" class="word-count">0 words</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="difficulty">
+                            <i class="fas fa-tasks icon-animate animate__animated animate__zoomIn"></i> Select Difficulty Level*
+                        </label>
+                        <select name="difficulty" id="difficulty" class="form-control" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company_tags">
+                            <i class="fas fa-building icon-animate animate__animated animate__fadeIn"></i> Company Tags (Optional)
+                        </label>
+                        <input type="text" id="company_tags" name="company_tags" class="form-control" placeholder="e.g. Facebook, Google, Amazon" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="topic_tags">
+                            <i class="fas fa-tag icon-animate animate__animated animate__fadeInUp"></i> Topic Tags (Optional)
+                        </label>
+                        <input type="text" id="topic_tags" name="topic_tags" class="form-control" placeholder="e.g. Binary Search, Graph, Dynamic Programming" />
+                    </div>
+
+                    <button type="submit" class="btn btn-modern-glow wow animate__pulse animate__infinite" data-wow-duration="1s">
+                        <i class="fas fa-arrow-right"></i> Next
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Sidebar for Hint Section -->
+        <div class="col-lg-4 col-md-12">
+            <div class="modern-glow-box p-4 mb-4 wow animate__fadeInRight" data-wow-duration="1s">
+                <h4><i class="fas fa-lightbulb icon-animate animate__animated animate__flash"></i> Tips for Contributing</h4>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check-circle tick-icon"></i> Provide a clear and detailed background for context.</li>
+                    <li><i class="fas fa-check-circle tick-icon"></i> Share your reasoning for choosing the difficulty level.</li>
+                    <li><i class="fas fa-check-circle tick-icon"></i> Include specific companies or topics for better categorization.</li>
+                </ul>
+            </div>
+
+            <!-- Sample Section -->
+            <div class="modern-glow-box p-4">
+                <h4><i class="fas fa-lightbulb icon-animate animate__animated animate__flash"></i> Sample</h4>
+                <p>This sample illustrates how to provide detailed background information. Add your context and reasoning to make the question more valuable!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for Cleaner Design with Advanced Effects -->
+<style>
+    /* General Box Styling */
+    .modern-glow-box, .modern-glow-card {
+        border-radius: 15px;
+        background-color: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.5s ease, transform 0.5s ease, background-color 0.3s ease;
+        font-family: 'Montserrat', sans-serif;
+        padding: 20px;  /* Reduced padding for a more compact feel */
+        border: 2px solid transparent;
+    }
+
+    /* Border Effect on Hover for Cards */
+    .modern-glow-box:hover, .modern-glow-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 12px 40px rgba(155, 7, 192, 0.15);
+        border-color: #220549; /* Border color on hover */
+    }
+
+    /* Title Styling with Icon */
+    .title-with-icon {
+        font-size: 28px; /* Reduced size for cleaner look */
+        font-weight: 600;
+        color: #290641;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease;
+    }
+
+    .title-with-icon:hover {
+        color: #9611b1;
+        transform: scale(1.05);
+    }
+
+    /* Paragraph Styling */
+    .modern-glow-box-body p {
+        font-size: 16px;  /* Slightly smaller font */
+        color: #444;
+        line-height: 1.6;
+    }
+
+    .modern-glow-box-body p strong {
+        color: #40058d
+    }
+
+    /* Form Elements Styling */
+    .form-group {
+        margin-bottom: 20px;  /* Reduced spacing */
+    }
+
+    .form-control {
+        padding: 15px;  /* Slightly reduced padding */
+        border-radius: 10px;  /* Slightly sharper edges */
+        border: 1px solid #ccc;
+        height:55px;
+        font-size: 16px;  /* Reduced font size */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #40058d;
+        box-shadow: 0 0 12px rgba(0, 98, 204, 0.5);
+    }
+
+    .form-control:hover {
+        border-color: #40058d;
+        box-shadow: 0 0 8px rgba(0, 86, 179, 0.3);
+    }
+
+    .btn-modern-glow {
+        background-color: #40058d;
+        color: white;
+        border-radius: 25px;  /* More subtle rounded corners */
+        padding: 12px 25px;  /* Reduced padding */
+        font-size: 18px;  /* Smaller font size */
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-modern-glow:hover {
+        background-color: #40058d;
+        transform: translateY(-4px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Word Count Styling */
+    .word-count {
+        font-size: 14px;  /* Smaller font size */
+        color: #666;
+        text-align: right;
+        margin-top: 5px;
+    }
+
+    /* Sidebar Styling */
+    .list-unstyled li {
+        font-size: 16px;  /* Smaller font size */
+        color: #333;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease;
+    }
+
+    .list-unstyled li:hover {
+        color: #0062cc;
+        transform: scale(1.05);
+    }
+
+    .list-unstyled li i {
+        color: #0062cc;
+        margin-right: 10px;
+    }
+
+    .list-unstyled li:hover i {
+        transform: scale(1.2);
+    }
+
+    /* Hover Animation for Cards */
+    .modern-glow-box:hover, .modern-glow-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Icon Hover Animations */
+    .icon-animate:hover {
+        transform: scale(1.25);
+    
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    /* Tick Icon Hover Animation */
+    .tick-icon {
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .tick-icon:hover {
+        transform: scale(1.2);
+        color: #08c45d; /* Green color on hover */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .col-lg-8, .col-lg-4 {
+            padding: 0 15px;
+        }
+
+        .modern-glow-box, .modern-glow-card {
+            padding: 18px;
+        }
+
+        .btn-modern-glow {
+            width: 100%;
+            padding: 10px 0;
+        }
+    }
+ .fa-lightbulb {
+    color: #ffe815; /* Bright yellow color for the bulb */
+    text-shadow: 0 0 7px #fffa87, 0 0 25px #ffe815, 0 0 45px #ffd700; /* Inner glow */
+    box-shadow: 0 0 20px #fffa87, 0 0 20px #ffe815, 0 0 60px #ffd700; /* Outer glow */
+    border-radius: 50%; /* Rounded edges for uniform glow */
+    width: 22px; /* Adjusted size for better visibility */
+    height: 22px;
+    display: inline-block;
+    line-height: 22px;
+    text-align: center;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    
+}
+
+/* Flickering animation */
+@keyframes flicker {
+    0%, 100% {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+    50% {
+        opacity: 0.9;
+        filter: brightness(0.8);
+    }
+    70% {
+        opacity: 1;
+        filter: brightness(1.3);
+    }
+}
+
+/* Add flickering effect when hovered */
+.fa-lightbulb:hover {
+    animation: flicker 1.5s infinite;
+    transform: scale(1.2); /* Slight zoom effect */
+}
+
+</style>
+
+<script>
+    function updateWordCount(id) {
+        var text = document.getElementById(id).value;
+        var wordCount = text.split(/\s+/).filter(function(word) { return word.length > 0; }).length;
+        document.getElementById(id + '-word-count').textContent = wordCount + ' words';
+    }
+</script>
+
+{% endblock %}

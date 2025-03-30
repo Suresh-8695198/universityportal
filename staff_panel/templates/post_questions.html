@@ -1,0 +1,268 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+<!-- Importing Google Fonts, Font Awesome Icons, and Custom Styling -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<div class="container">
+    <!-- Section to Post a New Question -->
+    <div class="row mb-5 text-center">
+        <div class="col-lg-8 offset-lg-2">
+            <h1 class="title-with-icon mb-4">
+                <i class="fas fa-clipboard-list text-gradient"></i> Post Coding Questions
+            </h1>
+            <div class="cont">
+            <a href="{% url 'question_background' %}" class="btn btn-gradient animated-button">
+                <i class="fas fa-plus-circle"></i> Get Started
+            </a>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="container3 mt-6">
+    <!-- Section to Display Posted Questions -->
+    <h1 class="title-with-icon mb-4">
+        <i class="fas fa-search text-gradient"></i> Posted Coding Questions
+    </h1>
+
+    {% if questions %}
+    <div class="row">
+        {% for question in questions %}
+        <div class="col-md-4 mb-4">
+            <div class="card question-card shadow-lg animated-card">
+                <div class="card-body">
+                    <!-- Display Company Logos/Icons -->
+                    <div class="company-logo mb-3 text-center">
+                        {% for tag in question.company_tags %}
+                            {% if tag == "Google" %}
+                            <img src="{% static 'images/logos/google.png' %}" alt="Google" class="company-logo-img">
+                            {% elif tag == "Facebook" %}
+                            <img src="{% static 'images/logos/facebook.png' %}" alt="Facebook" class="company-logo-img">
+                            {% elif tag == "Amazon" %}
+                            <img src="{% static 'images/logos/amazon.png' %}" alt="Amazon" class="company-logo-img">
+                            {% elif tag == "Flipkart" %}
+                            <img src="{% static 'images/logos/flipkart.png' %}" alt="Flipkart" class="company-logo-img">
+                            {% elif tag == "Byju's" %}
+                            <img src="{% static 'images/logos/byjus.png' %}" alt="Byju's" class="company-logo-img">
+                            {% elif tag == "Zoho" %}
+                            <img src="{% static 'images/logos/zoho.png' %}" alt="Zoho" class="company-logo-img">
+                            {% elif tag == "Paytm" %}
+                            <img src="{% static 'images/logos/paytm.png' %}" alt="Zoho" class="company-logo-img">
+                            {% else %}
+                            <img src="{% static 'images/logos/default.png' %}" alt="Default Logo" class="company-logo-img">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <h3 class="card-title">{{ question.title }}</h3>
+                    <p class="card-text">{{ question.description }}</p>
+                    <p><strong>Category:</strong> {{ question.category }}</p>
+                    <p><strong>Uploaded by:</strong> {{ question.uploaded_by.name }} ({{ question.uploaded_by.email }})</p>
+
+                    <!-- Display Company Tags -->
+                    {% if question.company_tags %}
+                    <p><strong>Company Tags:</strong>
+                        {% for tag in question.company_tags %}
+                        <span class="badge badge-primary">{{ tag }}</span>
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+
+                    <!-- Display Topic Tags -->
+                    {% if question.topic_tags %}
+                    <p><strong>Topic Tags:</strong>
+                        {% for tag in question.topic_tags %}
+                        <span class="badge badge-secondary">{{ tag }}</span>
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No questions posted yet.</p>
+    {% endif %}
+</div>
+
+<!-- Custom CSS for Advanced UI/UX -->
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(to bottom, #f4f4f9, #e8ebf2);
+        color: #333;
+    }
+
+    .title-with-icon {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+        text-align: center;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .text-gradient {
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -o-background-clip: text;
+        -ms-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+  /* Center Align Button */
+.cont {
+    display: flex;
+    justify-content: center; /* Horizontally centers the button */
+    align-items: center; /* Vertically centers the button */
+
+}
+
+/* Gradient Button */
+.btn-gradient {
+    width: 150px; /* Increase width for a better size */
+    height: 50px; /* Adjust height for balance */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, #ff8a00, #da1b60); /* Gradient for depth */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 138, 0, 0.7); /* Glowing shadow */
+    color: white;
+    font-size: 1.2rem; /* Adjust font size for balance */
+    font-weight: bold;
+    border-radius: 25px; /* Rounded corners */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    position: relative;
+    margin-left: 10px;
+    text-decoration: none; /* Remove underline on link */
+    text-align: center;
+}
+
+
+.btn-gradient:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+    background: linear-gradient(145deg, #ff8a00, #da1b60); /* Subtle gradient change for hover effect */
+}
+
+.btn-gradient:active {
+    transform: translateY(0); /* Reset hover effect when clicked */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slightly reduced shadow on click */
+}
+
+ /* Question Card Design */
+    .question-card {
+        border-radius: 15px;
+        border: none;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        height: 100%;
+    }
+
+    .question-card:hover {
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2), 0 0 60px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+    }
+
+    .card-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+
+    .card-text {
+        color: #555;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .badge {
+        font-size: 14px;
+        border-radius: 20px;
+        padding: 6px 14px;
+        margin-right: 5px;
+    }
+
+    /* Animations */
+    .animated-card {
+        animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .company-logo-img {
+        max-width: 60px;
+        max-height: 60px;
+        margin: 5px;
+        object-fit: contain;
+    }
+
+    /* Equal Height Cards */
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card-body {
+        flex-grow: 1;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .title-with-icon {
+            font-size: 26px;
+        }
+
+        .btn-gradient {
+            width: 100%;
+            padding: 12px 0;
+        }
+
+        .question-card {
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+        }
+
+        .card-text {
+            font-size: 14px;
+        }
+
+        .badge {
+            font-size: 12px;
+        }
+    }
+</style>
+
+{% endblock %}

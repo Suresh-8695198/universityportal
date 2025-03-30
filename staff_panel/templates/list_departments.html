@@ -1,0 +1,149 @@
+{% extends "staff_dashboard.html" %}
+{% block content %}
+
+
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold  animate__animated animate__fadeInUp">Post News and Annoucements</h1>
+        <p class="text-muted animate__animated animate__fadeInUp animate__delay-1s">Select a department to upload notes for students.</p>
+     <!-- Common News Button -->
+     <a href="{% url 'post_common_news' %}" class="btn btn-purple btn-lg mt-3">
+        <i class="fas fa-bullhorn"></i> Post Common News
+    </a>
+    
+    </div>
+
+
+ <!-- Departments Section -->
+ <div class="row g-4" id="departments-container">
+    {% for department in departments %}
+        <div class="col-md-4">
+            <div class="card department-card shadow-lg rounded-3">
+                <div class="card-body position-relative text-center">
+                    <!-- Animated Icon -->
+                    <div class="icon-wrapper">
+                        <i class="fas fa-chalkboard-teacher animated-icon"></i>
+                    </div>
+
+                    <!-- Department Info -->
+                    
+                    <h5 class="card-title text-purple">{{ department.year}} {{ department.name }}</h5>
+                    <p class="card-text text-muted">Total Students: <strong>{{ department.total_students }}</strong></p>
+
+                    <!-- View Department Button -->
+                    <a href="{% url 'department_details' department.id  %}" class="btn btn-purple w-100 animate-btn">
+                        <i class="fas fa-arrow-right"></i> View Department
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+</div>
+<!-- CSS -->
+<style>
+    /* General Purple Theme */
+    .text-purple {
+        color: #020807;
+        font-weight: bold;
+    }
+
+    .btn-purple {
+        background: #0dad78;
+        color: white;
+        border: none;
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    .btn-purple:hover {
+        background: #099e6c;
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(106, 13, 173, 0.6);
+    }
+
+    /* Glowing Text */
+    .glowing-text-purple {
+        color: #0dada5;
+       
+    }
+
+    /* Card Styling */
+    .department-card {
+        border: none;
+        background: #f8f9fa;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .department-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(106, 13, 173, 0.7);
+    }
+
+    /* Icon Animation */
+    .icon-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        background: #0dad70;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        animation: glow 1.5s infinite alternate, icon-bounce 2s infinite;
+    }
+
+    .animated-icon {
+        font-size: 2rem;
+        color: white;
+    }
+
+    @keyframes icon-bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Glow Animation */
+    @keyframes glow {
+        from {
+            box-shadow: 0 0 15px #19d166;
+        }
+        to {
+            box-shadow: 0 0 25px #19d166;
+        }
+    }
+
+    /* Year Badge */
+    .year-badge {
+        display: inline-block;
+        background: #000000;
+        color: white;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-size: 0.85rem;
+        margin-right: 5px;
+    }
+
+    /* Animation on Buttons */
+    .animate-btn {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(5, 211, 160, 0.4);
+    }
+
+    .animate-btn:hover {
+        transform: translateY(-3px);
+        background: #0dad5d;
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(13, 173, 120, 0.6);
+    }
+</style>
+
+<!-- Font Awesome Script -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

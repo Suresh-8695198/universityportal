@@ -1,0 +1,198 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+<style>
+
+/* Profile Picture Styles */
+.profile-picture-wrapper {
+    position: relative;
+    
+}
+
+.profile-picture-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+
+}
+.profile-card {
+    background: linear-gradient(145deg, #f3f3f3, #e1e1e1);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(82, 10, 129, 0.8), 0 0 30px rgba(128, 2, 167, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    outline: 5px solid transparent; /* Transparent outline for consistency */
+    animation: glowingOutline 2s infinite ease-in-out;
+    
+}
+
+
+/* Card with Blue Glowing Effect */
+.profile-card.blue-glow {
+    animation: glowingOutline 2s infinite alternate;
+}
+
+.profile-card:hover {
+    transform: scale(1.02);
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3), -5px -5px 20px rgba(255, 255, 255, 0.9);
+}
+.profile-picture {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid #007bff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5);
+}
+.profile-picture:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.7);
+}
+/* Upload Icon */
+.upload-overlay {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(145deg, #007bff, #0056b3);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    visibility: hidden;
+}
+
+.upload-overlay:hover {
+    transform: scale(1.1);
+}
+
+.profile-picture-container:hover .upload-overlay {
+    visibility: visible;
+}
+
+.upload-overlay:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Animation Effects */
+.animate-fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Card Styling */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #490377;
+    overflow: hidden;
+    
+
+        box-shadow: 0 0 15px rgba(82, 10, 129, 0.8), 0 0 30px rgba(128, 2, 167, 0.6) !important;
+        animation: glowingOutline 2s infinite alternate;
+        transition: transform 0.3s;
+    transition: box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.edit-mode {
+    display: none;
+}
+
+.edit-mode.active {
+    display: block;
+}
+
+.view-mode {
+    display: block;
+}
+
+.view-mode.hidden {
+    display: none;
+}
+
+</style>
+
+<div class="container mt-5">
+    <div class="profile-card p-4 shadow-lg rounded">
+        <!-- Profile Header -->
+        <div class="profile-header text-center mb-4">
+            <h2 class="text-primary fw-bold">Your Profile</h2>
+            <p class="text-muted">Keep your profile up-to-date</p>
+        </div>
+
+        <!-- View Mode -->
+        <div class="view-mode" id="viewMode">
+            <div class="text-center mb-4">
+                <div class="profile-picture-container position-relative d-inline-block">
+                    <img 
+                    src="{% if profile.profile_picture %}{{ profile.profile_picture }}{% else %}{% static 'images/admin-logo-1.jpg' %}{% endif %}" 
+                    alt="Profile Picture" 
+                    class="profile-picture rounded-circle shadow" />
+                
+                </div>
+            </div>
+            <div class="text-center">
+                <h3>{{ profile.name }}</h3>
+                <p>Email: {{ profile.email }}</p>
+                <p>Contact: {{ profile.contact }}</p>
+                <button class="btn btn-primary" onclick="toggleEditMode()">Edit Profile <i class="fas fa-pencil-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div class="edit-mode" id="editMode">
+            <form method="POST" enctype="multipart/form-data" class="animate-fade-in">
+                {% csrf_token %}
+                
+                <!-- Profile Picture -->
+                <div class="profile-picture-wrapper text-center mb-4">
+                    <div class="profile-picture-container position-relative d-inline-block">
+                        <img 
+                        src="{% if profile.profile_picture %}{{ profile.profile_picture }}{% else %}{% static 'images/admin-logo-1.jpg' %}{% endif %}" 
+                        alt="Profile Picture" 
+                        class="profile-picture rounded-circle shadow" />
+                        <label for="profile_picture" class="upload-overlay">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="profile_picture" class="form-control d-none" name="profile_picture">
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="name" name="name" value="{{ profile.name }}" required>
+                    <label for="name">Name</label>
+                </div>
+
+                <!-- Contact -->
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="contact" name="contact" value="{{ profile.contact }}" required>
+                    <label for="contact">Contact</label>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" onclick="toggleEditMode()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEditMode() {
+    const viewMode = document.getElementById('viewMode');
+    const editMode = document.getElementById('editMode');
+    viewMode.classList.toggle('hidden');
+    editMode.classList.toggle('active');
+}
+</script>
+{% endblock %}

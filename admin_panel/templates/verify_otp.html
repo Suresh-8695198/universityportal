@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <style>
+        body {
+            background: linear-gradient(45deg, #6B21A8, #1E3A8A);
+            background-size: 400% 400%;
+            animation: gradientAnimation 6s ease infinite;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            background: white;
+            max-width: 450px;
+            width: 100%;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .card:hover {
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .card-body {
+            padding: 30px 40px;
+        }
+
+        .card-body h2 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #6B21A8;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .card-body p {
+            color: rgb(77, 75, 75);
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .otp-input {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .otp-input input {
+            border: 2px dashed #6B21A8;
+            border-radius: 10px;
+            width: 60px;
+            height: 70px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            outline: none;
+            transition: border-color 0.3s;
+            background: #F4F4F4;
+            margin-right: 5px;
+        }
+
+        .otp-input input:last-child {
+            margin-right: 0;
+        }
+
+        .otp-input input:focus {
+            border-color: #1E3A8A;
+            background-color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #6B21A8;
+            border-color: #6B21A8;
+            padding: 18px;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1E3A8A;
+            border-color: #1E3A8A;
+            transform: scale(1.05);
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+        }
+
+        .timer {
+            font-size: 20px;
+            font-weight: bold;
+            color: #6B21A8;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                color: #6B21A8;
+            }
+
+            50% {
+                color: #1E3A8A;
+            }
+
+            100% {
+                color: #6B21A8;
+            }
+        }
+
+        .btn-link {
+            color: #6B21A8;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .btn-link:hover {
+            color: #1E3A8A;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h2>Verify OTP</h2>
+                <p>Please enter the OTP sent to your email. Expires in <span id="timer" class="timer"></span>.</p>
+
+                <!-- OTP Form -->
+                <form method="POST" action="{% url 'verify_otp' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="email" value="{{ email }}">
+
+                    <!-- OTP Input Fields -->
+                    <div class="otp-input">
+                        <input type="text" name="otp1" maxlength="1" required pattern="\d*" oninput="moveFocus(this, 'otp2')" onkeydown="handleBackspace(event, this, 'otp1')">
+                        <input type="text" name="otp2" maxlength="1" required pattern="\d*" oninput="moveFocus(this, 'otp3')" onkeydown="handleBackspace(event, this, 'otp1')">
+                        <input type="text" name="otp3" maxlength="1" required pattern="\d*" oninput="moveFocus(this, 'otp4')" onkeydown="handleBackspace(event, this, 'otp2')">
+                        <input type="text" name="otp4" maxlength="1" required pattern="\d*" oninput="moveFocus(this, 'otp5')" onkeydown="handleBackspace(event, this, 'otp3')">
+                        <input type="text" name="otp5" maxlength="1" required pattern="\d*" oninput="moveFocus(this, 'otp6')" onkeydown="handleBackspace(event, this, 'otp4')">
+                        <input type="text" name="otp6" maxlength="1" required pattern="\d*" onkeydown="handleBackspace(event, this, 'otp5')">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg">Verify OTP</button>
+
+                    {% if error %}
+                        <div class="error-message mt-3">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+                </form>
+
+                <!-- Resend OTP Section -->
+                <div id="resend-section" class="text-center mt-4" style="display:none;">
+                    <button id="resend-btn" class="btn btn-link">Resend OTP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timer and Resend Logic -->
+    <script>
+        let timeLeft = 600; // 5 minutes in seconds
+        const timerDisplay = document.getElementById('timer');
+
+        function updateTimer() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('resend-section').style.display = 'block';
+            } else {
+                timeLeft--;
+            }
+        }
+
+        let timerInterval = setInterval(updateTimer, 1000);
+
+        function moveFocus(current, next) {
+            if (current.value.length === current.maxLength) {
+                document.getElementsByName(next)[0].focus();
+            }
+        }
+
+        function handleBackspace(event, current, previous) {
+            if (event.key === 'Backspace' && current.value === '') {
+                document.getElementsByName(previous)[0].focus();
+            }
+        }
+    </script>
+</body>
+
+</html>

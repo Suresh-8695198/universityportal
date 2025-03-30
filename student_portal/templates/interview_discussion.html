@@ -1,0 +1,23 @@
+{% extends "nav.html" %}
+
+{% block title %}Interview Discussion{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Interview Discussion</h1>
+    <div class="posts mt-4">
+        {% for post in posts %}
+        <div class="post">
+            <strong>{{ post.sender_name }}</strong>
+            <p>{{ post.post }}</p>
+            <small>{{ post.timestamp }}</small>
+        </div>
+        {% endfor %}
+    </div>
+    <form method="POST" id="post-form">
+        {% csrf_token %}
+        <textarea name="post" class="form-control" placeholder="Share your interview experience..."></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Post</button>
+    </form>
+</div>
+{% endblock %}

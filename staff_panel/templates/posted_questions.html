@@ -1,0 +1,237 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+{% include 'timeline.html' %}
+
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        color: #4e73df;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        font-weight: 800;
+    }
+    
+    .questions-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .questions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .question-card {
+        background: linear-gradient(145deg, #ffffff, #f1f1f1);
+        border-radius: 15px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        overflow: hidden;
+        cursor: pointer;
+        padding: 25px;
+        position: relative;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .question-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    .question-card:active {
+        transform: translateY(-5px);
+    }
+    
+    .card-header {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-body {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .card-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    
+    .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 5px;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .delete-btn i {
+        margin-right: 8px;
+    }
+    
+    .delete-btn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05);
+    }
+    
+    .delete-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .badge {
+        background-color: #6c63ff;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 1rem;
+        margin-right: 8px;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    
+    .badge:hover {
+        transform: scale(1.1);
+        background-color: #5e50e4;
+    }
+    
+    .card-header i,
+    .card-footer i {
+        margin-right: 10px;
+    }
+    
+    .card-body p {
+        margin: 8px 0;
+    }
+    
+    .card-body .badge {
+        margin-right: 10px;
+    }
+    
+    .card-body p strong {
+        font-weight: 600;
+        color: #4e73df;
+    }
+
+    /* Hover Glow Effect for Icons */
+    @keyframes glowEffect {
+        0% {
+            filter: drop-shadow(0 0 5px #6c63ff) drop-shadow(0 0 10px #6c63ff);
+        }
+        50% {
+            filter: drop-shadow(0 0 15px #ff5733) drop-shadow(0 0 30px #ff5733);
+        }
+        100% {
+            filter: drop-shadow(0 0 5px #ffef14) drop-shadow(0 0 10px #f1e20f);
+        }
+    }
+    
+    .question-card:hover i {
+        animation: glowEffect 1.5s ease-in-out infinite;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 1024px) {
+        .questions-list {
+            grid-template-columns: 1fr;
+        }
+    
+        .page-title {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .questions-list {
+            grid-template-columns: 1fr;
+        }
+    
+        .page-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<div class="questions-container">
+    
+     <!-- Back Button -->
+     <a href="{% url 'post_questions' %}" class="btn btn-secondary mb-4">
+        <i class="fas fa-arrow-left"></i> Back To Home
+     </a>
+    <h1 class="page-title">Posted Coding Questions</h1>
+    {% if questions %}
+    <div class="questions-list">
+        {% for question in questions %}
+        <div class="question-card">
+            <div class="card-header">
+                <h3>{{ question.title }}</h3>
+                <p><i class="fas fa-user"></i> Uploaded by: {{ question.uploaded_by.name }} ({{ question.uploaded_by.email }})</p>
+            </div>
+            <div class="card-body">
+                <p>{{ question.description }}</p>
+                <p><strong>Category:</strong> {{ question.category }}</p>
+                <p><strong>Difficulty:</strong> 
+                    {% if question.difficulty %}
+                        {{ question.difficulty }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+                <p><strong>Company Tags:</strong> 
+                    {% if question.company_tags %}
+                        {% for tag in question.company_tags %}
+                            <span class="badge">{{ tag }}</span>{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+                <p><strong>Topic Tags:</strong> 
+                    {% if question.topic_tags %}
+                        {% for tag in question.topic_tags %}
+                            <span class="badge">{{ tag }}</span>{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-footer">
+                <form action="{% url 'delete_question' question.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger delete-btn">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No questions posted yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

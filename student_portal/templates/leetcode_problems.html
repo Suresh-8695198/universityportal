@@ -1,0 +1,21 @@
+{% extends 'nav.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="text-center">LeetCode Problems</h2>
+    <div class="row">
+        {% for problem in problems %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ problem.stat.question__title }}</h5>
+                    <p class="card-text">Difficulty: {{ problem.difficulty.level }}</p>
+                    <a href="{% url 'leetcode_problem_detail' problem.stat.question__title_slug %}" class="btn btn-primary">Solve Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

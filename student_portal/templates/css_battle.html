@@ -1,0 +1,654 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Battle</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/hint/show-hint.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/hint/show-hint.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/3.4.9/diff2html.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/diff2html/3.4.9/diff2html.min.css">
+    <style>
+        /* General Layout */
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'IBM Plex Mono', monospace;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            background-color: #171d23;
+            color: #cbd1e1;
+        }
+
+        header {
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode header {
+            background-color: #282c34;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: calc(100vh - 80px);
+        }
+
+        .combined-editor, 
+        .preview-container, 
+        .target-container {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        body.light-mode .combined-editor,
+        body.light-mode .preview-container,
+        body.light-mode .target-container {
+            background-color: #ffffff;
+        }
+
+        body.dark-mode .combined-editor,
+        body.dark-mode .preview-container,
+        body.dark-mode .target-container {
+            background-color: #1d1f22;
+        }
+
+        .combined-editor {
+            grid-column: 1 / 2;
+        }
+
+        .preview-container {
+            grid-column: 2 / 3;
+            position: relative;
+        }
+
+        .target-container {
+            grid-column: 3 / 4;
+        }
+
+        .CodeMirror {
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .nav-bar {
+            background-color: #f8f9fa;
+        }
+
+        body.dark-mode .nav-bar {
+            background-color: #282c34;
+        }
+
+        .target-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .target-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+
+      
+
+        .slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #007bff;
+            cursor: col-resize;
+            display: none;
+        }
+
+        .color-codes {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .color-codes {
+            background-color: #f8f9fa;
+        }
+
+        body.dark-mode .color-codes {
+            background-color: #282c34;
+        }
+
+        button#mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode button#mode-toggle {
+            background-color: #333;
+            color: #fff;
+        }
+
+        body.dark-mode button#mode-toggle {
+            background-color: #fff;
+            color: #333;
+        }
+
+        h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.2rem;
+        }
+
+        .points {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background-color: red;
+            cursor: col-resize;
+            z-index: 2;
+            transition: left 0.1s ease;
+            display: none;
+            overflow: hidden;
+           
+        }
+
+        .preview-container:hover .slider {
+            background-color: blue;
+            overflow: hidden;
+        }
+
+        .preview-container:hover iframe {
+            pointer-events: auto;
+            overflow: hidden;
+            
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #282c34;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            position: relative;
+            top: 0;
+            width: 500px;
+            z-index: 3;
+        }
+
+        .nav-bar label {
+            margin-right: 10px;
+            
+        }
+
+        .preview-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+        .preview-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .highlight-diff {
+            mix-blend-mode: difference;
+            background-color: rgba(5, 71, 71, 0.5); /* Teal background color */
+        }
+
+        .highlight-diff * {
+            background-color: rgba(214, 7, 7, 0.8) !important; /* Dark color for boxes */
+        }
+
+        .color-codes {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #282c34;
+            border-radius: 8px;
+            color: white;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .color-codes span {
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* Circular button styling */
+        .button--circular {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50% !important;
+            background-color: #f0f2f5; /* Light mode background */
+            color: #333; /* Light mode icon color */
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        body.dark-mode .button--circular {
+            background-color: #333; /* Dark mode background */
+            color: #f0f2f5; /* Dark mode icon color */
+        }
+
+        .button--circular:hover {
+            box-shadow: 0 0 15px rgba(0, 230, 230, 0.8);
+        }
+
+        /* Icon transition */
+        #mode-icon {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode #mode-icon {
+            transform: rotate(180deg); /* Rotate for Moon icon */
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <h1>CSS Design Challenge</h1>
+    </header>
+    
+    <button id="mode-toggle" aria-label="Toggle Dark Mode" class="button button--circular">
+        <svg id="mode-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <!-- Default Sun Icon -->
+            <circle cx="12" cy="12" r="5"></circle>
+            <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="1" x2="12" y2="4"></line>
+                <line x1="12" y1="20" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="4" y2="12"></line>
+                <line x1="20" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </g>
+        </svg>
+      
+    </button>
+    <main>
+        <div class="nav-bar">
+            <label>
+                <input type="checkbox" id="diff-checkbox"> Show Differences
+            </label>
+            <label>
+                <input type="checkbox" id="slide-checkbox"> Slide to Compare
+            </label>
+            <label>
+                Opacity: <input type="range" id="opacity-slider" min="0" max="1" step="0.01" value="1">
+            </label>
+        </div>
+        <div class="combined-editor">
+            <label>
+                Font Size: <input type="range" id="font-size-slider" min="10" max="30" step="1" value="14">
+            </label>
+            <h3>HTML & CSS Editor</h3>
+            <textarea id="code-editor"></textarea>
+            <button id="submit-button">Submit</button>
+        </div>
+      
+        <div class="preview-container">
+            
+            <h3>Preview</h3>
+            <iframe id="solution-frame"></iframe>
+            <img class="Preview_previewTargetImage__z7Wfx" src="{{ problem.image_url }}" alt="Target Output">
+            <div class="slider" id="slider"></div>
+        </div>
+
+        <div class="target-container">
+            <h3>Target Output</h3>
+            <img src="{{ problem.image_url }}" alt="Target Output">
+            <div class="color-codes" id="color-codes">
+                <!-- Color codes will be displayed here -->
+            </div>
+        </div>
+
+        <div class="points">
+            Points: <span id="points">0</span>
+        </div>
+        
+    </main>
+
+    <script>
+        const problemList = document.getElementById("problem-list");
+        const problemTitle = document.getElementById("problem-title");
+        const problemDescription = document.getElementById("problem-description");
+        const solutionFrame = document.getElementById("solution-frame");
+        const diffCheckbox = document.getElementById("diff-checkbox");
+        const slideCheckbox = document.getElementById("slide-checkbox");
+        const opacitySlider = document.getElementById("opacity-slider");
+        const fontSizeSlider = document.getElementById("font-size-slider");
+        const submitButton = document.getElementById("submit-button");
+        const slider = document.getElementById("slider");
+        const previewImage = document.querySelector(".Preview_previewTargetImage__z7Wfx");
+        const colorCodesContainer = document.getElementById("color-codes");
+
+        // CodeMirror editor
+        const codeEditor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+            mode: "htmlmixed",
+            lineNumbers: true,
+            theme: "eclipse",
+            extraKeys: {"Ctrl-Space": "autocomplete"},
+            hintOptions: {schemaInfo: CodeMirror.htmlSchema}
+        });
+
+        let problems = [];
+        let currentProblem = null;
+        let points = 0;
+
+        async function fetchProblems() {
+            const response = await fetch("problems.json");
+            problems = await response.json();
+
+            problems.forEach(problem => {
+                const li = document.createElement("li");
+                li.textContent = problem.title;
+                li.dataset.problemId = problem.id;
+                problemList.appendChild(li);
+            });
+
+            problemList.addEventListener("click", e => {
+                const problemId = e.target.dataset.problemId;
+                if (problemId) {
+                    loadProblemDetails(problemId);
+                }
+            });
+        }
+
+        function loadProblemDetails(problemId) {
+            currentProblem = problems.find(p => p.id == problemId);
+            problemTitle.textContent = currentProblem.title;
+            problemDescription.textContent = currentProblem.description;
+            codeEditor.setValue(currentProblem.htmlTemplate + "\n<style>\n" + currentProblem.cssTemplate + "\n</style>");
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const userCode = codeEditor.getValue();
+            solutionFrame.srcdoc = userCode;
+
+            if (diffCheckbox.checked || slideCheckbox.checked) {
+                previewImage.style.display = 'block';
+                solutionFrame.classList.add('highlight-diff');
+                solutionFrame.style.mixBlendMode = 'difference';
+            } else {
+                previewImage.style.display = 'none';
+                solutionFrame.classList.remove('highlight-diff');
+                solutionFrame.style.mixBlendMode = 'normal';
+            }
+
+            solutionFrame.style.opacity = opacitySlider.value;
+        }
+
+        codeEditor.on("change", updatePreview);
+
+        diffCheckbox.addEventListener("change", updatePreview);
+        slideCheckbox.addEventListener("change", updatePreview);
+        opacitySlider.addEventListener("input", updatePreview);
+
+        // Font size adjustment
+        fontSizeSlider.addEventListener("input", () => {
+            const fontSize = fontSizeSlider.value + "px";
+            codeEditor.getWrapperElement().style.fontSize = fontSize;
+            codeEditor.refresh();
+        });
+
+        // Slider functionality
+        let isDragging = false;
+
+        function activateSlider(clientX) {
+            const containerRect = solutionFrame.parentElement.getBoundingClientRect();
+            const offsetX = clientX - containerRect.left;
+            const percentage = Math.max(0, Math.min((offsetX / containerRect.width) * 100, 100));
+            solutionFrame.style.width = `${percentage}%`;
+            slider.style.left = `${percentage}%`;
+        }
+
+        document.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                activateSlider(e.clientX);
+            }
+        });
+
+        slider.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            activateSlider(e.clientX);
+            document.body.style.overflow = 'hidden'; // Disable scroll bar
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            document.body.style.overflow = ''; // Enable scroll bar
+        });
+
+        document.addEventListener("mouseleave", () => {
+            isDragging = false;
+            document.body.style.overflow = ''; // Enable scroll bar
+        });
+
+        slideCheckbox.addEventListener("change", () => {
+            if (slideCheckbox.checked) {
+                slider.style.display = 'block';
+                solutionFrame.parentElement.addEventListener("mousemove", handleMouseMove);
+            } else {
+                slider.style.display = 'none';
+                solutionFrame.style.width = '100%';
+                solutionFrame.parentElement.removeEventListener("mousemove", handleMouseMove);
+            }
+        });
+
+        function handleMouseMove(e) {
+            if (isDragging) {
+                activateSlider(e.clientX);
+            }
+        }
+
+        function extractColors() {
+            const targetImage = document.querySelector(".Preview_previewTargetImage__z7Wfx");
+
+            // Create a canvas to draw the images
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            // Load the target image
+            const targetImg = new Image();
+            targetImg.crossOrigin = "Anonymous"; // Handle cross-origin issues
+            targetImg.src = targetImage.src;
+
+            targetImg.onload = () => {
+                canvas.width = targetImg.width;
+                canvas.height = targetImg.height;
+
+                // Draw the target image on the canvas
+                context.drawImage(targetImg, 0, 0);
+
+                // Extract colors from the target image with higher brightness
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+                const colors = new Set();
+
+                for (let i = 0; i < imageData.length; i += 4) {
+                    const r = imageData[i];
+                    const g = imageData[i + 1];
+                    const b = imageData[i + 2];
+                    const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+                    if (brightness > 120) { // Only consider colors with higher brightness
+                        const color = rgbToHex(r, g, b);
+                        colors.add(color);
+                    }
+                }
+
+                // Display the colors
+                colorCodesContainer.innerHTML = '';
+                colors.forEach(color => {
+                    const colorSpan = document.createElement('span');
+                    colorSpan.textContent = color;
+                    colorSpan.style.backgroundColor = color;
+                    colorSpan.addEventListener('click', () => {
+                        navigator.clipboard.writeText(color);
+                        alert(`Copied: ${color}`);
+                    });
+                    colorCodesContainer.appendChild(colorSpan);
+                });
+            };
+        }
+
+        // Submit button functionality
+        submitButton.addEventListener("click", () => {
+            const userCode = codeEditor.getValue();
+
+            // Create a canvas to draw the images
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            // Load the user code as an image
+            const userImg = new Image();
+            userImg.crossOrigin = "Anonymous"; // Handle cross-origin issues
+            userImg.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">' + userCode + '</div></foreignObject></svg>');
+
+            userImg.onload = () => {
+                // Draw the user code image on the canvas
+                context.globalAlpha = 0.5;
+                context.drawImage(userImg, 0, 0);
+
+                // Compare the images
+                const targetData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+                const userData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+
+                let diffCount = 0;
+                for (let i = 0; i < targetData.length; i += 4) {
+                    if (targetData[i] !== userData[i] ||
+                        targetData[i + 1] !== userData[i + 1] ||
+                        targetData[i + 2] !== userData[i + 2] ||
+                        targetData[i + 3] !== userData[i + 3]) {
+                        diffCount++;
+                    }
+                }
+
+                const totalPixels = canvas.width * canvas.height;
+                const diffPercentage = (diffCount / totalPixels) * 100;
+
+                alert(`Difference: ${diffPercentage.toFixed(2)}%`);
+            };
+        });
+
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
+
+        fetchProblems();
+        extractColors(); // Extract colors on page load
+
+
+
+        // Keep your existing JavaScript and add mode toggle functionality
+        const modeToggle = document.getElementById('mode-toggle');
+const body = document.body;
+const modeIcon = document.getElementById('mode-icon');
+
+modeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-mode');
+    body.classList.toggle('dark-mode');
+
+    // Update the icon
+    if (body.classList.contains('dark-mode')) {
+        // Moon icon for dark mode
+        modeIcon.innerHTML = `
+           <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 1010.58 9.79z"></path>
+        `;
+    } else {
+        // Sun icon for light mode
+        modeIcon.innerHTML = `
+            <circle cx="12" cy="12" r="5"></circle>
+            <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="1" x2="12" y2="4"></line>
+                <line x1="12" y1="20" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="4" y2="12"></line>
+                <line x1="20" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </g>
+        `;
+    }
+});
+    </script>
+</body>
+</html>

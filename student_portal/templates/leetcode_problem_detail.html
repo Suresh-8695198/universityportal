@@ -1,0 +1,230 @@
+{% extends 'nav.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="text-center">{{ problem.title }}</h2>
+    <div class="problem-content">{{ problem.content|safe }}</div>
+
+    <!-- Code Editor -->
+    <div class="editor-container mb-4">
+        <select id="languageSelector" class="form-select mb-2">
+            {% for snippet in problem.codeSnippets %}
+            <option value="{{ snippet.lang }}">{{ snippet.lang }}</option>
+            {% endfor %}
+        </select>
+        <textarea id="codeEditor" class="form-control" rows="10"></textarea>
+        <button id="submitButton" class="btn btn-primary mt-2" onclick="submitCode()">Submit</button>
+    </div>
+
+    <!-- Test Cases Section -->
+    <div class="test-cases-container mb-4">
+        <h4>Test Cases:</h4>
+        <ul id="testCasesList" class="list-group">
+            {% for test_case in problem.exampleTestcases %}
+            <li class="list-group-item">
+                <strong>Input:</strong> {{ test_case.input }}<br>
+                <strong>Expected Output:</strong> {{ test_case.expected_output }}
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-2">
+            <span id="testCasesPassed">0</span>/<span id="totalTestCases">{{ problem.exampleTestcases|length }}</span> Test Cases Passed
+        </div>
+    </div>
+
+    <!-- Output Section -->
+    <div class="output-container">
+        <h4>Output:</h4>
+        <pre id="output"></pre>
+    </div>
+</div>
+
+<!-- Toast Message -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="resultToast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                Your code matches 0% with the expected output.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Coin Animation Modal -->
+<div class="modal fade" id="coinModal" tabindex="-1" aria-labelledby="coinModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="height: 500px;">
+            <div class="modal-body text-center d-flex flex-column justify-content-center align-items-center">
+                <div id="coinAnimation" class="coin-animation">
+                    <div class="coin">
+                        <div class="coin-front"></div>
+                        <div class="coin-back"></div>
+                    </div>
+                </div>
+                <div class="points-earned mt-3">
+                    <h3>+<span id="pointsEarned">0</span></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Code Editor -->
+<script>
+    function submitCode() {
+        var code = document.getElementById("codeEditor").value;
+        var language = document.getElementById("languageSelector").value;
+        var output = document.getElementById("output");
+        var testCasesPassed = document.getElementById("testCasesPassed");
+        var testCasesList = document.getElementById("testCasesList").children;
+        var totalTestCases = testCasesList.length;
+
+        // Prepare test cases
+        var testCases = [];
+        for (var i = 0; i < totalTestCases; i++) {
+            var input = testCasesList[i].querySelector("strong:nth-child(1)").nextSibling.textContent.trim();
+            var expectedOutput = testCasesList[i].querySelector("strong:nth-child(2)").nextSibling.textContent.trim();
+            testCases.push({ input: input, expected_output: expectedOutput });
+        }
+
+        // Send code and test cases to backend
+        fetch("{% url 'submit_code' problem.id %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ code: code, language: language, test_cases: testCases })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var passedCount = 0;
+                data.results.forEach((result, index) => {
+                    if (result.passed) {
+                        testCasesList[index].classList.add("list-group-item-success");
+                        passedCount++;
+                    } else {
+                        testCasesList[index].classList.add("list-group-item-danger");
+                    }
+                    testCasesList[index].innerHTML += `<br><strong>Actual Output:</strong> ${result.actual_output}`;
+                });
+                testCasesPassed.innerText = passedCount;
+                if (data.all_passed) {
+                    output.innerText = "All test cases passed!";
+                    document.getElementById("submitButton").innerText = "Solved";
+                    document.getElementById("submitButton").classList.add("btn-success");
+                    showCoinAnimation(10); // Example: 10 points for solving the problem
+                } else {
+                    output.innerText = "Some test cases failed.";
+                }
+            } else {
+                output.innerText = "Error: " + data.message;
+            }
+        })
+        .catch(error => {
+            output.innerText = "Error: " + error;
+        });
+    }
+
+    function showCoinAnimation(points) {
+        var pointsEarned = document.getElementById("pointsEarned");
+        pointsEarned.innerText = points;
+
+        var coinModal = new bootstrap.Modal(document.getElementById('coinModal'));
+        coinModal.show();
+
+        setTimeout(function() {
+            coinModal.hide();
+        }, 3000);
+    }
+</script>
+
+<style>
+    .editor-container {
+        background: #282c34;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+    textarea {
+        width: 100%;
+        background: black;
+        color: white;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        padding: 10px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+    textarea:focus {
+        box-shadow: 0 0 10px rgba(187, 34, 233, 0.8);
+    }
+    .output-container {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+    pre {
+        background: black;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .toast-container {
+        z-index: 1055;
+    }
+    .coin-animation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .coin {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: gold;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.5);
+        transform-style: preserve-3d;
+        animation: spin 3s infinite linear;
+    }
+    .coin-front, .coin-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: gold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: black;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .coin-back {
+        transform: rotateY(180deg);
+    }
+    @keyframes spin {
+        0% { transform: rotateY(0deg); }
+        100% { transform: rotateY(360deg); }
+    }
+    .points-earned {
+        font-size: 2rem;
+        color: gold;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        animation: glow 1.5s infinite alternate;
+    }
+    @keyframes glow {
+        0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); }
+        100% { text-shadow: 0 0 20px rgba(255, 215, 0, 1); }
+    }
+</style>
+
+{% endblock %}

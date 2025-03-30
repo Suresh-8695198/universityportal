@@ -1,0 +1,251 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Add Animations JS -->
+<script src="https://cdn.jsdelivr.net/npm/wowjs@1.1.2/dist/wow.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
+
+<!-- Add Custom CSS and JS -->
+<style>
+    /* General Styling for Page */
+    .container {
+        margin-top: 5rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: bold; /* Make all text bold */
+    }
+
+    /* Card Styling */
+    .card {
+        border-radius: 20px;
+        transition: all 0.4s ease-in-out;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border: none;
+    }
+
+    /* Hover Effect for Cards */
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        animation: glowing 1.5s ease-in-out infinite;
+    }
+
+    /* Glowing Animation for Cards */
+    @keyframes glowing {
+        0% { box-shadow: 0 0 5px #9c27b0, 0 0 10px #9c27b0, 0 0 15px #9c27b0; }
+        50% { box-shadow: 0 0 10px #9c27b0, 0 0 20px #9c27b0, 0 0 30px #9c27b0; }
+        100% { box-shadow: 0 0 5px #9c27b0, 0 0 10px #9c27b0, 0 0 15px #9c27b0; }
+    }
+
+    /* Card Header Styling */
+    .card-header {
+        background-color: #9c27b0;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* Table Styling */
+    .table {
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 2rem;
+        animation: fadeInUp 1s ease-in-out;
+    }
+
+    .table thead {
+        background-color: #9c27b0;
+        color: white;
+    }
+
+    .table th, .table td {
+        font-size: 15px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Hover Effect for Table Rows */
+    .table tbody tr:hover {
+        background-color: rgba(156, 39, 176, 0.1);
+        transform: scale(1.05);
+        animation: glowing 1.5s ease-in-out infinite;
+    }
+
+    /* Hover Effect for Specific Columns */
+    .table tbody tr td:nth-child(2):hover,
+    .table tbody tr td:nth-child(3):hover {
+        background-color: rgba(156, 39, 176, 0.2);
+        transform: scale(1.1);
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background-color: #9c27b0;
+        border: 2px solid #9c27b0;
+        color: white;
+        padding: 14px 28px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Glowing Button Effect */
+    .btn-primary:focus, .btn-primary:hover {
+        background-color: white;
+        color: #9c27b0;
+        border-color: #9c27b0;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px 4px rgba(156, 39, 176, 0.5);
+        animation: glowing 1.5s ease-in-out infinite;
+    }
+
+    /* Icon Styling */
+    .btn-primary .icon-btn {
+        font-size: 20px;
+        margin-left: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    /* Hover Animation for Icon */
+    .btn-primary:hover .icon-btn {
+        transform: rotate(360deg);
+    }
+
+    /* Year Badge Styling */
+    .year-badge {
+        font-size: 15px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 25px;
+        background-color: #9c27b0;
+        color: white;
+    }
+
+    /* Fade In Up Animation for Text */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .table td, .table th {
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px 20px;
+        }
+
+        .card-header {
+            font-size: 1.2rem;
+        }
+    }
+
+    h1{
+        color: #5b0769;
+    }
+
+    /* Align the "Post Notes" button to the right corner */
+    .post-notes-btn {
+        display: block;
+        margin-left: auto;
+        margin-right: 0;
+        max-width: 300px;
+    }
+
+    /* Back Button Styling */
+    .back-btn {
+        font-size: 18px;
+        color: #9c27b0;
+        text-decoration: none;
+        padding: 10px 20px;
+        border: 2px solid #9c27b0;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+        background-color: #9c27b0;
+        color: white;
+        box-shadow: 0 0 20px 4px rgba(156, 39, 176, 0.5);
+        transform: scale(1.05);
+    }
+
+    .back-btn .icon-btn {
+        font-size: 20px;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .back-btn:hover .icon-btn {
+        transform: rotate(180deg);
+    }
+
+</style>
+
+<div class="container mt-5">
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="fas fa-arrow-left icon-btn"></i>Back
+    </a>
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold animate__animated animate__fadeInUp">Manage Students for {{ department.name }}</h1>
+        <p class="text-muted animate__animated animate__fadeInUp animate__delay-1s">Manage students and post notes seamlessly.</p>
+    </div>
+
+    <!-- Button to Post Notes -->
+    <a href="{% url 'upload_to_drive' dept_id=dept_id class_name=department.year %}" class="btn btn-primary mb-2 post-notes-btn">
+        Post Notes for {{ department.year }} {{ department.name }}
+        <i class="fas fa-upload icon-btn"></i>
+    </a>  
+
+    <!-- Students Section -->
+    <div class="card shadow-lg wow animate__animated animate__fadeInUp" data-wow-delay="0.3s">
+        <div class="card-header">Students <i class="fas fa-users icon-btn"></i></div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

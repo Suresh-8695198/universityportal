@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+    <style>
+  
+
+
+        /* Stats Boxes */
+/* General Styles for Equal-Sized Stats Boxes */
+.stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.stats-box {
+    width: 250px; /* Fixed width */
+    height: 250px; /* Fixed height */
+    perspective: 1000px; /* Enable 3D perspective for flip effect */
+    position: relative;
+    text-align: center;
+}
+
+/* Inner Box for Flip Effect */
+.stats-box-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Flip on Hover */
+.stats-box:hover .stats-box-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and Back of the Card */
+.stats-box-front,
+.stats-box-back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden; /* Prevents the hidden side from showing */
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+}
+.stats-box-back {
+    color:#000;
+}
+/* Front Card Design */
+.stats-box-front {
+    background: linear-gradient(135deg, #667eea, #764ba2); /* Default gradient */
+    transform: rotateY(0deg); /* Front side starts unrotated */
+    z-index: 2;
+}
+
+/* Back Card Design */
+.stats-box-back {
+    background: rgba(255, 255, 255, 0.8); /* Distinct background for the back */
+    transform: rotateY(180deg); /* Initially hidden by rotation */
+    z-index: 1;
+}
+
+/* Color Themes for Each Card */
+.stats-box:nth-child(1) .stats-box-front {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+.stats-box:nth-child(2) .stats-box-front {
+    background: linear-gradient(135deg, #45aaf2, #2d98da);
+}
+.stats-box:nth-child(3) .stats-box-front {
+    background: linear-gradient(135deg, #26de81, #20bf6b);
+}
+.stats-box:nth-child(4) .stats-box-front {
+    background: linear-gradient(135deg, #fc5c65, #eb3b5a);
+}
+
+/* Text and Icon Styles */
+.stats-box h4 {
+    font-size: 18px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.stats-box p {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.stats-box-back p {
+    font-size: 16px;
+    font-weight: normal;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Icons */
+.stats-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+
+
+
+        /* Card Styling */
+        /* Ensure Equal Card Sizes */
+.card {
+    border: none;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Allow flexible height adjustment */
+    display: flex;
+    flex-direction: column; /* Ensures content aligns properly */
+    justify-content: space-between; /* Distribute content inside card */
+    
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Container Flexbox for Equal Heights */
+.row {
+    display: flex;
+    flex-wrap: wrap; /* Ensures responsiveness */
+    gap: 1rem; /* Add spacing between cards */
+}
+
+.row > div {
+    flex: 1 1 calc(25% - 1rem); /* Adjust for 4 cards in a row with space */
+    display: flex; /* Flex container for equal heights */
+}
+
+.card-header {
+    background: linear-gradient(90deg, #2b0155, #051d86);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 20px 20px 0 0;
+    text-align: center; /* Center align text */
+}
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(90deg, #320163, #051d86);
+            color: white;
+            border-radius: 20px;
+        }
+    </style>
+
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <h1 class="text-primary">Welcome, Admin</h1>
+            <p class="text-muted">Manage and monitor your platform effectively.</p>
+        </div>
+
+       <!-- Statistics Overview -->
+<!-- Statistics Overview -->
+<div class="stats-container">
+    <div class="stats-box">
+        <div class="stats-box-inner">
+            <div class="stats-box-front">
+                <i class="stats-icon fas fa-building"></i>
+                <h4>Total Departments</h4>
+                <p>{{ departments|default:0 }}</p>
+            </div>
+            <div class="stats-box-back">
+                <p>Our university is home to a variety of academic departments, fostering growth and innovation.</p>
+            </div>
+        </div>
+    </div>
+    <div class="stats-box">
+        <div class="stats-box-inner">
+            <div class="stats-box-front">
+                <i class="stats-icon fas fa-user-graduate"></i>
+                <h4>Total Students</h4>
+                <p>{{ students|default:0 }}</p>
+            </div>
+            <div class="stats-box-back">
+                <p>A thriving community of students dedicated to learning and achieving excellence.</p>
+            </div>
+        </div>
+    </div>
+    <div class="stats-box">
+        <div class="stats-box-inner">
+            <div class="stats-box-front">
+                <i class="stats-icon fas fa-chalkboard-teacher"></i>
+                <h4>Total Staff</h4>
+                <p>{{ staff|default:0 }}</p>
+            </div>
+            <div class="stats-box-back">
+                <p>Our staff members are the backbone of our institution, driving quality education.</p>
+            </div>
+        </div>
+    </div>
+    <div class="stats-box">
+        <div class="stats-box-inner">
+            <div class="stats-box-front">
+                <i class="stats-icon fas fa-code"></i>
+                <h4>Coding Problems Posted</h4>
+                <p>{{ problems|default:0 }}</p>
+            </div>
+            <div class="stats-box-back">
+                <p>Encouraging innovation and learning through engaging coding challenges.</p>
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- Charts Section -->
+        <div class="row mt-4">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">Department Stats (Bar Chart)</div>
+                    <div class="card-body">
+                        <canvas id="departmentBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">Staff Distribution (Pie Chart)</div>
+                    <div class="card-body">
+                        <canvas id="staffPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">Student Growth Over Time (Line Chart)</div>
+                    <div class="card-body">
+                        <canvas id="studentLineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js Script -->
+    <script>
+        // Department Stats Bar Chart
+        var ctxBar = document.getElementById('departmentBarChart').getContext('2d');
+        var departmentBarChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Department A', 'Department B', 'Department C', 'Department D'],
+                datasets: [{
+                    label: 'Number of Students',
+                    data: [120, 80, 50, 150],
+                    backgroundColor: '#007bff',
+                    borderColor: '#0056b3',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Staff Distribution Pie Chart
+        var ctxPie = document.getElementById('staffPieChart').getContext('2d');
+        var staffPieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Full-time', 'Part-time', 'Contract', 'Intern'],
+                datasets: [{
+                    label: 'Staff Distribution',
+                    data: [60, 25, 10, 5],
+                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56'],
+                    borderColor: '#fff',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Student Growth Line Chart
+        var ctxLine = document.getElementById('studentLineChart').getContext('2d');
+        var studentLineChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Student Growth',
+                    data: [20, 30, 40, 50, 70, 100],
+                    borderColor: '#4caf50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+
+{% endblock %}

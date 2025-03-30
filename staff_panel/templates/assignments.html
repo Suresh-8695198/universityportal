@@ -1,0 +1,173 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold glowing-text-purple">Assignments Management</h1>
+        <p class="text-muted">Select a class and post assignments to students seamlessly.</p>
+    </div>
+
+    <!-- Departments Section -->
+    <div class="row g-4" id="departments-container">
+        {% for department in departments %}
+            <div class="col-md-4">
+                <div class="card department-card shadow-lg rounded-3">
+                    <div class="card-body position-relative text-center">
+                        <!-- Animated Icon -->
+                        <div class="icon-wrapper">
+                            <i class="fas fa-chalkboard-teacher animated-icon"></i>
+                        </div>
+
+                        <!-- Department Info -->
+                        
+                        <h5 class="card-title text-purple">{{ department.years }} {{ department.name }}</h5>
+                        <p class="card-text text-muted">Total Students: <strong>{{ department.total_students }}</strong></p>
+
+                        <!-- View Department Button -->
+                        <a href="{% url 'view_department' department.id  %}" class="btn btn-purple w-100 animate-btn">
+                            <i class="fas fa-arrow-right"></i> View Class
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal for Posting Assignment -->
+    <div class="modal fade" id="postAssignmentModal" tabindex="-1" aria-labelledby="postAssignmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-purple text-white">
+                    <h5 class="modal-title" id="postAssignmentModalLabel">Post Assignment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="postAssignmentForm">
+                        <div class="mb-3">
+                            <label for="assignmentTitle" class="form-label">Assignment Title</label>
+                            <input type="text" class="form-control border-0 shadow-sm" id="assignmentTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentDescription" class="form-label">Description</label>
+                            <textarea class="form-control border-0 shadow-sm" id="assignmentDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignmentDeadline" class="form-label">Deadline</label>
+                            <input type="datetime-local" class="form-control border-0 shadow-sm" id="assignmentDeadline" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 animate-btn">
+                            <i class="fas fa-paper-plane"></i> Post Assignment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    /* General Purple Theme */
+    .text-purple {
+        color: black;
+        font-weight: bold;
+    }
+
+    .btn-purple {
+        background: #6a0dad;
+        color: white;
+        border: none;
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    .btn-purple:hover {
+        background: #5a099e;
+        box-shadow: 0 8px 20px rgba(106, 13, 173, 0.6);
+    }
+
+    /* Glowing Text */
+    .glowing-text-purple {
+        color: #6a0dad;
+       
+    }
+
+    /* Card Styling */
+    .department-card {
+        border: none;
+        background: #f8f9fa;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .department-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(106, 13, 173, 0.7);
+    }
+
+    /* Icon Animation */
+    .icon-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        background: #6a0dad;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        animation: glow 1.5s infinite alternate, icon-bounce 2s infinite;
+    }
+
+    .animated-icon {
+        font-size: 2rem;
+        color: white;
+    }
+
+    @keyframes icon-bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Glow Animation */
+    @keyframes glow {
+        from {
+            box-shadow: 0 0 15px #6a0dad;
+        }
+        to {
+            box-shadow: 0 0 25px #6a0dad;
+        }
+    }
+
+    /* Year Badge */
+    .year-badge {
+        display: inline-block;
+        background: #6a0dad;
+        color: white;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-size: 0.85rem;
+        margin-right: 5px;
+    }
+
+    /* Animation on Buttons */
+    .animate-btn {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+    }
+
+    .animate-btn:hover {
+        transform: translateY(-3px);
+        background: #6a0dad;
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(106, 13, 173, 0.6);
+    }
+</style>
+
+<!-- Font Awesome Script -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+{% endblock %}

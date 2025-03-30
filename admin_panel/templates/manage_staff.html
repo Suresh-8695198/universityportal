@@ -1,0 +1,1519 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Add these in your HTML <head> section -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="container-fluid mt-5">
+        <h3 class="text-primary">Manage Staff</h3>
+        <p class="text-muted">Add and manage staff here.</p>
+    
+       
+    </div>
+    
+    <!-- Bootstrap 5 and FontAwesome 5 CDN for icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    
+    
+    <style>
+     /* Icon Styling */
+    .input-icon {
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: #363636;
+    }
+
+    /* Form Input Enhancements */
+    .form-control {
+        border: 1px solid #ddd;
+        transition: all 0.3s ease-in-out;
+        position: relative;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0px 4px 10px rgba(13, 110, 253, 0.2);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #4e4e4e;
+        opacity: 0.8;
+    }
+
+    /* Form Group Positioning */
+    .form-group {
+        flex-grow: 1;
+    }
+
+    /* Filter Button Hover Effect */
+    .btn-animates:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    /* Card Styling */
+    .fcard {
+        margin-top: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+    }
+
+    .fcard:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        transform: translateY(-5px);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        #filterForm {
+            justify-content: center;
+        }
+
+        .btn-animate {
+            margin-top: 10px;
+        }
+    }
+
+       #graphicalInterface {
+    max-height: 65vh; 
+    min-height: 40vh; /* Minimum height to avoid cutoff */
+    overflow-y: auto;
+    overflow-x: hidden;
+ 
+
+}
+
+/* Card Design Improvements */
+.card {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    transition: all 0.3s ease;
+    text-align: center;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.card .text-muted {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+.card .btn {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Background Fill Animation */
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: all 0.6s ease-out;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 0;
+}
+
+/* Text stays visible on hover */
+.btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* View Students Button */
+.view-students-btn {
+    border: 2px solid #007bff;
+    background-color: transparent;
+    color: #f8fafc;
+}
+
+.view-students-btn:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #0056b3;
+}
+
+.view-students-btn:hover:before {
+    background-color: #007bff;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Add Student Button */
+.add-student-btn {
+    border: 2px solid #28a745;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.add-student-btn:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #218838;
+}
+
+.add-student-btn:hover:before {
+    background-color: #28a745;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Delete All Button */
+.delete-all-btn {
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #fcfcfc;
+}
+
+.delete-all-btn:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #c82333;
+}
+
+.delete-all-btn:hover:before {
+    background-color: #dc3545;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Smooth Hover Effects */
+.btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Hover effect for icon rotation */
+.btn i {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover i {
+    transform: rotate(360deg);
+}
+
+/* Card Hover Effect */
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Fade-in effect */
+.fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Button Hover Effects for Add/Delete Buttons */
+.add-student-btn, .upload-excel-btn, .delete-all-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover, .delete-all-btn:hover {
+    transform: scale(1.05);
+    background-color: #007bff;
+}
+
+/* Table Styling */
+.table {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+}
+
+.table thead {
+    background: linear-gradient(180deg, #383738, #09090a);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.02);
+    transition: all 0.3s ease-in-out;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .card {
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+
+    .text-muted {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Button Styling */
+/* Button Styling */
+.manage-degree-btn {
+    position: relative;
+    display: inline-block;
+    background-color: transparent;
+    border: 2px solid #007bff;
+    color: #007bff;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+    text-align: center;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Fill Effect Behind Text */
+.manage-degree-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 25px;
+    transform: scaleX(0);
+    transform-origin: 100% 50%;
+    z-index: 0;
+    transition: transform 0.5s ease-in-out;
+}
+
+
+/* Fade-in Effect for Cards */
+.fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }n
+
+    .text-muted {
+        font-size: 1rem;
+    }
+}
+
+/* Button Hover Effects */
+.card .btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.card .btn:hover {
+    transform: scale(1.05);
+    background-color: #2980b9;
+}
+
+/* Glow Effect on Buttons */
+.manage-degree-btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.manage-degree-btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Animation for Buttons */
+#empty-page-container .btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#empty-page-container .btn:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+}
+
+/* Hover Effects for Add/Delete Buttons */
+.add-student-btn, .upload-excel-btn, .delete-all-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover, .delete-all-btn:hover {
+    transform: scale(1.05);
+    background-color: #007bff;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Apply animation to icons */
+.icon-animation {
+    animation: fadeIn 0.5s ease-in-out, bounce 0.5s ease-in-out;
+}
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+/* For small screens like mobile */
+@media (max-width: 576px) {
+    #graphicalInterface {
+        max-height: 50vh; /* Slightly smaller height for smaller screens */
+        min-height: 30vh; /* Minimum height for small screens */
+    }
+}
+
+/* For larger mobile devices and tablets */
+@media (max-width: 768px) {
+    #graphicalInterface {
+        max-height: 55vh; /* Moderate height for medium screens */
+        min-height: 35vh; /* Slightly larger minimum height for medium screens */
+    }
+}
+
+/* For larger screens like laptops and desktops */
+@media (min-width: 1024px) {
+    #graphicalInterface {
+        max-height: 65vh; /* Standard height for larger screens */
+        min-height: 40vh; /* Standard minimum height for larger screens */
+    }
+}
+
+/* For very large screens like large desktops */
+@media (min-width: 1200px) {
+    #graphicalInterface {
+        max-height: 70vh; /* Slightly larger max height for very large screens */
+        min-height: 45vh; /* Larger minimum height for very large screens */
+    }
+}
+        /* Responsive Media Queries */
+        @media (max-width: 768px) {
+            /* Stack the cards vertically on smaller screens */
+            .card {
+                max-width: 100%; /* Cards should fill available space */
+                margin-bottom: 1rem;
+            }
+
+            /* Reduce font size for smaller screens */
+            .card-title {
+                font-size: 1.25rem;
+            }
+
+            .text-muted {
+                font-size: 0.9rem;
+            }
+        }
+
+
+    /* Enhanced table styling */
+    .table {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 16px; /* Increased font size for better readability */
+    }
+
+    .table thead {
+        background: linear-gradient(180deg, #383738, #09090a);
+        color: white;
+        font-size: 1.1rem; /* Increased header text size */
+        font-weight: bold;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    
+
+    /* Fade-in effect for table */
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    /* Tooltip Styling */
+    .tooltip-inner {
+        background-color: #343a40;
+        color: white;
+    }
+
+    /* Styling table rows */
+    .table-row:focus-within {
+        background-color: #e9ecef;
+    }
+
+    /* Styling for S.No column */
+    .sno-column {
+        width: 10%;
+        text-align: center;
+    }
+    th{
+        color:white !important;
+    }
+    /* Spacing for Table Header */
+    th, td {
+       
+        padding: 12px 15px;
+        text-align: center;
+    }
+
+    h4 {
+  
+        margin-bottom: 30px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+
+/* Table Styling */
+.table {
+    transition: all 0.3s ease;
+}
+
+.table th, .table td {
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* Hover Effects for Table Rows */
+.table-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Button Hover Effects */
+button.btn:hover {
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+button.btn i {
+    transition: transform 0.3s ease;
+}
+
+button.btn:hover i {
+    transform: rotate(360deg);
+}
+
+/* Modal Animation */
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Buttons on Empty Page */
+#empty-page-container .btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#empty-page-container .btn:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+}
+
+/* Back to Table Button */
+#back-to-table-view-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#back-to-table-view-btn:hover {
+    background-color: #6c757d;
+    transform: scale(1.05);
+}
+
+/* Hover Effects for Add/Delete Buttons */
+.add-student-btn, .upload-excel-btn, .delete-all-btn {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover, .delete-all-btn:hover {
+    transform: scale(1.05);
+    background-color: #007bff;
+}
+
+/* Department Table Styling */
+.table th {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+}
+
+.table td {
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+/* Department List Section */
+#student-list-section {
+    margin-top: 20px;
+}
+
+#student-list-section .table {
+    transition: transform 0.3s ease;
+}
+
+#student-list-section .table:hover {
+    transform: scale(1.02);
+}
+
+/* Glow Effect on Buttons */
+.add-student-btn, .upload-excel-btn {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.add-student-btn:hover, .upload-excel-btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Fade In Animation for Empty Page */
+#empty-page-container {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Style for Header */
+h4.text-primary {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+
+/* General Button Styling */
+.btn {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover Effect with Animation */
+.btn:hover {
+    color: #fff;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Water Fill Effect for Hover */
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+
+    border-radius: 50%;
+    transition: all 2s ease-out;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: -1;
+}
+
+/* Trigger Water Fill Effect on Hover */
+.btn:hover:before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Text Stays on Top */
+.btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* View Students Button (Outline) */
+.view-students-btn {
+    border: 2px solid #007bff;
+    background-color: transparent;
+    color: #007bff;
+}
+
+.view-students-btn:hover {
+    background-color: #007bff;
+    border-color: #2980b9;
+}
+
+/* Add Student Button (Outline) */
+.add-student-btn {
+    border: 2px solid #28a745;
+    background-color: transparent;
+    color: #28a745;
+}
+
+.add-student-btn:hover {
+    background-color: #28a745;
+    border-color: #218838;
+}
+
+/* Delete All Button (Red) */
+.delete-all-btn {
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #dc3545;
+}
+
+.delete-all-btn:hover {
+    background-color: #dc3545;
+    border-color: #c82333;
+}
+
+/* Icon Animation */
+.btn i {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover i {
+    transform: rotate(360deg);
+}
+
+/* Add glow effect for buttons on hover */
+.btn:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling for Action Column Buttons */
+.table .btn {
+    font-size: 1rem;
+    padding: 10px 15px;
+}
+
+/* Table Row Hover Effect */
+.table-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Responsive Button Styling */
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+
+/*New Css*/
+
+
+/* Table Styling */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+/* Styling for Table Rows */
+.table-row:focus-within {
+    background-color: #e9ecef;
+}
+
+/* Table Header */
+.table th {
+    color: white !important;
+    background-color: #343a40;
+    padding: 12px 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Table Data */
+.table td {
+    padding: 12px 15px;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .table th {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .table td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        padding-right: 10px;
+    }
+}
+
+/* Styling S.No. Column */
+.sno-column {
+    width: 10%;
+    text-align: center;
+}
+
+/* Hover Effects for Table Rows */
+.table-row:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Responsive Button Styling */
+@media (max-width: 576px) {
+    .btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+}
+
+        
+
+
+
+/* Added Student Card */
+.card.added {
+    background-color: #d4edda; /* Light Green */
+    border-color: #c3e6cb;
+    box-shadow: 0 6px 20px rgba(56, 224, 111, 0.2);
+}
+
+.card.added:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(56, 224, 111, 0.4);
+    background-color: #c3e6cb; /* Slightly darker on hover */
+}
+
+/* Empty Student Card */
+.card.empty {
+    background-color: #f8d7da; /* Light Red */
+    border-color: #f5c6cb;
+    box-shadow: 0 6px 20px rgba(255, 99, 71, 0.2);
+}
+
+.card.empty:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 99, 71, 0.4);
+    background-color: #f5c6cb; /* Slightly darker on hover */
+}
+
+/* Title and Content Styling */
+.card h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+}
+
+.card p {
+    font-size: 1.1rem;
+
+    font-weight:bold;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Hover effect on title */
+.card:hover h5 {
+    color: #1e7e34; /* Darker green for Added Card */
+}
+
+/* Button Styling */
+.add-student-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(145deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 99, 71, 0.3);
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-student-btn:hover {
+    background: linear-gradient(145deg, #ff6a95, #ff8567);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 99, 71, 0.4);
+}
+
+/* Smooth Transition for Elements */
+.card, .add-student-btn {
+    transition: all 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        padding: 15px;
+    }
+
+    .card h5 {
+        font-size: 1.2rem;
+    }
+
+    .card p {
+        font-size: 1rem;
+    }
+
+    .add-student-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+#staffListSection{
+    margin-top: 18px;
+}
+
+
+
+    </style>
+
+
+
+
+<!-- Staff Management Section -->
+<div id="staffManagementInterface" class="p-4 bg-light rounded shadow-sm">
+    <h4 class="text-secondary fw-bold mb-4">Staff Management</h4>
+
+    <!-- Add Staff and Upload Excel Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+            <i class="bi bi-person-plus-fill"></i> Add Staff
+        </button>
+        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#uploadStaffExcelModal">
+            <i class="bi bi-file-earmark-spreadsheet-fill"></i> Upload via Excel
+        </button>
+    </div>
+</div>
+
+    <!-- Filter Card -->
+    <div class="fcard border-0 shadow-lg p-4 rounded-4 bg-light position-relative">
+        <!-- Filter Options -->
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Filter Form -->
+            <form id="filterForm" class="d-flex flex-wrap gap-3">
+                <!-- Staff Name -->
+                <div class="form-group position-relative">
+                    <input type="text" id="filterName" class="form-control rounded-3 ps-5 py-3" placeholder="Staff Name" />
+                    <svg class="input-icon position-absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-3-3h-4a3 3 0 00-3 3v2h5zM12 11a4 4 0 110-8 4 4 0 010 8z" />
+                    </svg>
+                </div>
+
+                <!-- Contact Number -->
+                <div class="form-group position-relative">
+                    <input type="text" id="filterContact" class="form-control rounded-3 ps-5 py-3" placeholder="Contact Number" />
+                    <svg class="input-icon position-absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10v6c0 1.1.9 2 2 2h2m10 0h2c1.1 0 2-.9 2-2v-6m-16 0V7c0-1.1.9-2 2-2h2m10 0h2c1.1 0 2 .9 2 2v3M10 12h4M10 16h2" />
+                    </svg>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group position-relative">
+                    <input type="email" id="filterEmail" class="form-control rounded-3 ps-5 py-3" placeholder="Email" />
+                    <svg class="input-icon position-absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.5L12 16.5m0-4l-4.5 4m10.5-4l-4-4-4 4" />
+                    </svg>
+                </div>
+
+                <!-- Filter Button -->
+                <button type="submit" class="btn btn-primary rounded-3 px-4 py-2 shadow-sm btn-animates">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </form>
+
+            <!-- Refresh Button -->
+            <button id="refreshButton" class="btn btn-outline-secondary rounded-3 px-4 py-2 shadow-sm btn-animate">
+                <i class="fas fa-sync-alt refresh-icon"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Container where the staff table will be displayed -->
+<div id="staffListSection"></div>
+
+<!-- Add Staff Modal -->
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStaffModalLabel">Add Staff</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST"  id="addStaffForm">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="staffName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="staffName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="staffEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="staffEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="staffContact" class="form-label">Contact</label>
+                        <input type="text" class="form-control" id="staffContact" name="contact" required>
+                    </div>
+                  
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Staff</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" tabindex="-1" id="staffModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staffModalLabel">Edit Staff</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="editStaffForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="staffNameEd">Name:</label>
+                        <input type="text" id="staffNameEd" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffEmailEd">Email:</label>
+                        <input type="email" id="staffEmailEd" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffContactEd">Contact:</label>
+                        <input type="text" id="staffContactEd" name="contact" class="form-control" required>
+                    </div>
+                    <input type="hidden" id="staffIdEd" name="staffId">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="/manage-staff/" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Upload Excel Modal -->
+<div class="modal fade" id="uploadStaffExcelModal" tabindex="-1" aria-labelledby="uploadStaffExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadStaffExcelModalLabel">Upload Staff via Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadExcelModal" enctype="multipart/form-data" action="/staff-upload-excel/" method="POST">
+              
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="staffExcelFile" class="form-label">Choose Excel File</label>
+                        <input type="file" class="form-control" id="staffExcelFile" name="staff_excel_file" accept=".xlsx,.xls" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary upload-excel-btn">Upload</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="staffTable">
+</table>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const staffListSection = document.getElementById('staffListSection'); // Container for the staff list
+    const staffModal = new bootstrap.Modal(document.getElementById('staffModal')); // Modal for editing staff
+
+    let staffData = [];  // Array to store fetched staff data
+
+    // Fetch and display staff
+    function fetchStaff() {
+        fetch('/get-staff/')
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    staffData = data.staffs;  // Store staff data in the array
+                    displayStaff(staffData);   // Display staff data in the table
+                } else {
+                    alert('Failed to load staff data.');
+                }
+            })
+            .catch((error) => {
+                alert('Error fetching staff data.');
+            });
+    }
+
+    // Function to display staff in the table
+    function displayStaff(staff) {
+        const cardContainer = document.createElement('div');
+        cardContainer.classList.add('staff-table-card', 'mb-4');
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-striped', 'table-bordered', 'table-hover', 'staff-table');
+        const thead = document.createElement('thead');
+        thead.classList.add('thead-dark');
+        thead.innerHTML = `
+            <tr>
+                <th>S.No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        staff.forEach((staff, index) => {
+            const row = document.createElement('tr');
+            row.dataset.id = staff.id;
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${staff.name}</td>
+                <td>${staff.email}</td>
+                <td>${staff.contact}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm edit-staff-btn" data-id="${staff.id}">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm delete-staff-btn" data-id="${staff.id}">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        cardContainer.appendChild(table);
+        staffListSection.innerHTML = '';
+        staffListSection.appendChild(cardContainer);
+    }
+
+    // Call fetchStaff() when the page loads
+    fetchStaff();
+
+    // Filter functionality
+    document.getElementById('filterForm').addEventListener('submit', function (event) {
+        event.preventDefault();  // Prevent default form submission
+
+        const name = document.getElementById('filterName').value.toLowerCase();
+        const contact = document.getElementById('filterContact').value;
+        const email = document.getElementById('filterEmail').value.toLowerCase();
+
+        // Perform the filtering based on entered values
+        const filteredStaff = staffData.filter(staffMember => {
+            return (name ? staffMember.name.toLowerCase().includes(name) : true) &&
+                   (contact ? staffMember.contact.includes(contact) : true) &&
+                   (email ? staffMember.email.toLowerCase().includes(email) : true);
+        });
+
+        // Display the filtered staff list
+        displayStaff(filteredStaff);
+    });
+
+    // Refresh functionality
+    document.getElementById('refreshButton').addEventListener('click', function () {
+        // Clear the filters
+        document.getElementById('filterName').value = '';
+        document.getElementById('filterContact').value = '';
+        document.getElementById('filterEmail').value = '';
+
+        // Reset and show all staff
+        displayStaff(staffData);
+    });
+
+    // Edit staff functionality
+    staffListSection.addEventListener('click', function (event) {
+        if (event.target.classList.contains('edit-staff-btn')) {
+            const staffId = event.target.getAttribute('data-id');
+            if (!staffId) {
+                console.error('Missing staff ID');
+                return;
+            }
+            fetch(`/fetch-staff/${staffId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('staffIdEd').value = staffId;
+                        document.getElementById('staffNameEd').value = data.staff.name;
+                        document.getElementById('staffEmailEd').value = data.staff.email;
+                        document.getElementById('staffContactEd').value = data.staff.contact;
+                        staffModal.show();
+                    } else {
+                        alert(`Error: ${data.message}`);
+                    }
+                })
+                .catch(error => console.error('Error fetching staff details:', error));
+        }
+    });
+});
+
+
+    // Function to show toast
+    function showToast(title, message, type) {
+    const toastElement = document.createElement('div');
+    toastElement.classList.add('toast', 'align-items-center', 'text-white', 'border-0', 'position-fixed', 'top-0', 'end-0', 'm-3', `bg-${type}`);
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+    toastElement.style.zIndex = '9999'; // Ensure the toast is on top
+
+    const toastBody = document.createElement('div');
+    toastBody.classList.add('d-flex', 'align-items-center', 'p-3');
+    toastElement.appendChild(toastBody);
+
+    // Icon based on the type of message (success or error)
+    const icon = document.createElement('i');
+    icon.classList.add('fas', type === 'success' ? 'fa-check-circle' : 'fa-times-circle', 'me-3');
+    icon.style.fontSize = '20px';
+    toastBody.appendChild(icon);
+
+    const bodyContent = document.createElement('div');
+    bodyContent.classList.add('toast-body');
+    bodyContent.innerHTML = `<strong>${title}</strong>: ${message}`;
+    toastBody.appendChild(bodyContent);
+
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('btn-close', 'btn-close-white', 'ms-auto');
+    closeButton.setAttribute('data-bs-dismiss', 'toast');
+    closeButton.setAttribute('aria-label', 'Close');
+    toastBody.appendChild(closeButton);
+
+    document.body.appendChild(toastElement);
+
+    // Show the toast
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => {
+        toastElement.remove();
+    }, 3000);
+}
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('upload-excel-btn')) {
+        const uploadExcelModal = new bootstrap.Modal(document.getElementById('uploadExcelForm'));
+        uploadExcelModal.show();
+    }
+});
+
+document.getElementById('uploadExcelModal').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    // CSRF token for Django
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    console.log('CSRF Token:', csrfToken);  // For debugging
+
+    fetch('/staff-upload-excel/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Success', data.message, 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showToast('Error', data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        showToast('Error', 'An error occurred. Please try again.', 'danger');
+    });
+});
+
+
+document.getElementById('editStaffForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Gather form data
+    const staffId = document.getElementById('staffIdEd').value;
+    const name = document.getElementById('staffNameEd').value;
+    const email = document.getElementById('staffEmailEd').value;
+    const contact = document.getElementById('staffContactEd').value;
+
+
+        // Log values to check if they are being captured correctly
+    console.log('staffId:', staffId);
+    console.log('name:', name);
+    console.log('email:', email);
+    console.log('contact:', contact);
+
+
+    // Validate form data
+    if (!name || !email || !contact) {
+        alert('All fields are required!');
+        return;
+    }
+
+    // Prepare the data object
+    const staffData = {
+        name: name,
+        email: email,
+        contact: contact,
+    };
+
+    // Fetch CSRF token
+    const csrftoken = getCookie('csrftoken');
+
+    // Send data to the backend
+    fetch(`/edit-staff/${staffId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken, // Include CSRF token in the headers
+        },
+        body: JSON.stringify(staffData),
+    })
+        .then(async (response) => {
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                   
+                      
+                // Close the modal
+              
+                showToast('Staff Updated Successfully', data.message, 'success');
+                // Reload the page after a slight delay (to give time for the modal to close)
+                setTimeout(() => {
+                    location.reload(); // Reloads the page to show the updated staff list
+                }, 1000);  // Delay in milliseconds (500ms = 0.5 seconds)
+              
+                } else {
+                    console.error('Unexpected response format:', data);
+                    alert('An error occurred: ' + (data.message || 'Unknown error.'));
+                }
+            } else {
+                console.error('HTTP error:', response.status);
+                alert('An unexpected error occurred. Please try again.');
+            }
+        })
+        .catch((error) => {
+            console.error('Request failed:', error);
+            alert('An unexpected error occurred. Please check your connection and try again.');
+        });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const staffTable = document.getElementById('staffListSection'); // Assuming this is the table container
+
+    staffTable.addEventListener('click', (event) => {
+        // Delete staff
+        if (event.target.classList.contains('delete-staff-btn')) {
+            const row = event.target.closest('tr');
+            const staffId = row.dataset.id;
+
+            if (confirm('Are you sure you want to delete this staff member?')) {
+                fetch(`/delete-staff/${staffId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Parse JSON response
+                    })
+                    .then((data) => {
+                        if (data.success) {
+                            // Remove the row from the table
+                            row.remove(); 
+                            alert('Staff deleted successfully!');
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting staff:', error);
+                    });
+            }
+        }
+    });
+});
+
+
+// Function to get the CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+//Filter Script
+</script>
+
+{% endblock %}

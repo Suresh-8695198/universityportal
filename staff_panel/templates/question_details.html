@@ -1,0 +1,360 @@
+{% extends 'staff_dashboard.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f4f7fa;
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        flex-direction: column;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Centering Form Container */
+    .form-container {
+        max-width: 800px;
+        width: 100%;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 50px;
+        transition: transform 0.3s ease;
+        margin-left: 20px;
+    }
+
+    .form-container:hover {
+        transform: translateY(-5px);
+    }
+
+    .form-header {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .form-subtext {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Form Styling */
+    .styled-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .styled-form label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .styled-form input,
+    .styled-form textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .styled-form input:focus,
+    .styled-form textarea:focus {
+        border-color: #6c63ff;
+        box-shadow: 0 0 10px rgba(108, 99, 255, 0.6);
+        outline: none;
+    }
+
+    .styled-form button.btn-submit {
+        background-color: #6c63ff;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .styled-form button.btn-submit:hover {
+        background-color: #574dcb;
+        transform: scale(1.05);
+    }
+
+    .styled-form button.btn-submit:active {
+        transform: scale(0.98);
+    }
+
+    /* Floating Hint Section */
+    .hint-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: fixed;
+        right: 30px;
+        top: 100px;
+        z-index: 2;
+        transition: visibility 0.3s ease, opacity 0.3s ease;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .hint-section {
+        background-color: #e8f4fc;
+        border-left: 5px solid #6c63ff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        animation: floatHint 1s ease-out infinite alternate;
+        width: 100%;
+    }
+
+    @keyframes floatHint {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .hint-section h3 {
+        font-size: 1.3rem;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .hint-section ul {
+        padding-left: 20px;
+    }
+
+    .hint-section ul li {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .hint-section ul li strong {
+        color: #6c63ff;
+    }
+
+    .example-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-top: 10px;
+    }
+
+    .example-card pre {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        overflow-x: auto;
+    }
+
+    /* Icon Styling */
+    /* Toggle Button */
+    .toggle-hint-bt {
+      
+       outline: none;
+       border: none;
+        padding: 10px;
+       
+        font-size: 1.5rem;
+        position: fixed;
+        right: 30px;
+        top: 50px;
+        z-index: 3;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .toggle-hint-bt:hover {
+        transform: scale(1.1);
+    }
+
+    .toggle-hint-bt:active {
+        transform: scale(0.95);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 20px;
+        }
+
+        .hint-section {
+            width: 100%;
+            max-width: none;
+        }
+    }
+
+ .bi-lightbulb {
+    color: #ffe815; /* Bright yellow color for the bulb */
+    text-shadow: 0 0 7px #fffa87, 0 0 25px #ffe815, 0 0 45px #ffd700; /* Inner glow */
+    
+    border-radius: 50%; /* Rounded edges for uniform glow */
+    width: 13px; /* Adjusted size for better visibility */
+    height: 13px;
+    display: inline-block;
+    line-height: 22px;
+    text-align: center;
+    right:10px;
+    position: relative;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    
+}
+
+/* Flickering animation */
+@keyframes flicker {
+    0%, 100% {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+    50% {
+        opacity: 0.9;
+        filter: brightness(0.8);
+    }
+    70% {
+        opacity: 1;
+        filter: brightness(1.3);
+    }
+}
+
+/* Add flickering effect when hovered */
+.bi-lightbulb:hover {
+    animation: flicker 1.5s infinite;
+    transform: scale(1.2); /* Slight zoom effect */
+}
+
+</style>
+
+<!-- Timeline included here -->
+{% include 'timeline.html' %}
+
+    
+
+<!-- Form Section -->
+<div class="form-container">
+     <!-- Back Button -->
+     <button onclick="history.back()" class="btn btn-secondary mb-4">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <h2 class="form-header">Name and Describe Your Question</h2>
+    <p class="form-subtext">
+        Provide examples or descriptions to help users understand your question more easily.
+    </p>
+
+    <form method="post" class="styled-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="category">
+                <i class="bi bi-tags"></i> Category*
+            </label>
+            <input type="text" id="category" name="category" placeholder="Enter the category (e.g., Array, String)" required>
+        </div>
+
+        <div class="form-group">
+            <label for="title">
+                <i class="bi bi-pencil"></i> Title*
+            </label>
+            <input type="text" id="title" name="title" maxlength="150" placeholder="Enter a concise and specific title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">
+                <i class="bi bi-card-text"></i> Description*
+            </label>
+            <textarea id="description" name="description" placeholder="Describe your problem in detail..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="bi bi-arrow-right-circle"></i> Next
+        </button>
+    </form>
+</div>
+
+<!-- Toggle Buttons for Hint Sections -->
+<button class="toggle-hint-bt" onclick="toggleWritingHint()">
+    <i class="bi bi-lightbulb"></i> 
+</button>
+
+<button class="toggle-hint-bt" style="top: 110px;" onclick="toggleAdditionalTips()">
+    <i class="bi bi-info-circle"></i>
+
+</button>
+
+<!-- Hint Section -->
+<div class="hint-sections" id="writingHintSections">
+    <div class="hint-section">
+        <h3><i class="bi bi-lightbulb"></i> Writing a Great Question</h3>
+        <p>Follow these tips for crafting your question:</p>
+        <ul>
+            <li><strong>Great titles:</strong> Concise, descriptive, and specific (e.g., "Find Substring").</li>
+            <li>
+                <strong>Describe clearly:</strong> Provide examples and ensure your question isn’t already answered.
+                <div class="example-card">
+                    <h4><i class="bi bi-example"></i> Example</h4>
+                    <p><strong>Sample Question:</strong> Given an array of integers, return indices of the two numbers that add up to a specific target.</p>
+                    <pre>
+nums = [2, 7, 11, 15]
+target = 9
+Output: [0, 1] because nums[0] + nums[1] = 2 + 7 = 9
+                    </pre>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="hint-sections" id="additionalTipsSections" style="display:none;">
+    <div class="hint-section">
+        <h3><i class="bi bi-lightbulb"></i> Additional Tips</h3>
+        <p>Make your question even clearer:</p>
+        <ul>
+            <li><strong>Provide code examples:</strong> If possible, include a code snippet.</li>
+            <li><strong>Include error messages:</strong> If you're encountering errors, share the error message.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function toggleWritingHint() {
+        const writingHintSections = document.getElementById('writingHintSections');
+        if (writingHintSections.style.display === 'none' || writingHintSections.style.display === '') {
+            writingHintSections.style.display = 'flex';
+        } else {
+            writingHintSections.style.display = 'none';
+        }
+    }
+
+    function toggleAdditionalTips() {
+        const additionalTipsSections = document.getElementById('additionalTipsSections');
+        if (additionalTipsSections.style.display === 'none' || additionalTipsSections.style.display === '') {
+            additionalTipsSections.style.display = 'flex';
+        } else {
+            additionalTipsSections.style.display = 'none';
+        }
+    }
+</script>
+
+{% endblock %}
