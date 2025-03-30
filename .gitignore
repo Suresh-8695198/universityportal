@@ -8,3 +8,7 @@
 "staff_panel/firebase/staff_portal.json" 
 "firebase/students_portal.json" 
 "staff_panel/firebase/admin_portal.json" 
+firebase/*.json
+staff_panel/firebase/*.json
+staff_panel/google-drive.json
+student_portal/__pycache__/
