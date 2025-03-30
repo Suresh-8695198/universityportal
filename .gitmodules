@@ -1,3 +1,6 @@
 [submodule "college_portal"]
 	url = https://github.com/Suresh-8695198/college_portal.git
 	path = college_portal
+[submodule "git-filter-repo"]
+	path = git-filter-repo
+	url = https://github.com/newren/git-filter-repo.git
